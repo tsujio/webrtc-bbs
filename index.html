@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>P2P Anonymous BBS</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/index.css">
+
+    <script data-main="require-config" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <form class="navbar-form navbar-right">
+          <button class="btn btn-default" type="button" id="btn-reload">Reload</button></li>
+        </form>
+        <ul class="nav nav-pills pull-right" id="navigator">
+          <li><a href="#" id="nav-top">Top</a></li>
+          <li><a href="#" id="nav-about">About</a></li>
+          <li><a href="#" id="nav-contact">Contact</a></li>
+          <li><a href="#" id="nav-settings">Settings</a></li>
+        </ul>
+        <h3 class="text-muted">P2P Anonymous BBS</h3>
+      </div>
+
+      <div id="contents"></div>
+
+      <div class="footer">
+        <p>&copy; Company 2014</p>
+      </div>
+    </div>
+
+    <!-- thread/index -->
+    <script type="text/template" id="template-thread-index">
+        <div class="jumbotron">
+          <h1>P2P Anonymous BBS</h1>
+          <p class="lead">This is an anonymous BBS using Peer-to-Peer (P2P) technology. </p>
+        </div>
+
+        <div class="row marketing">
+          <div class="col-lg-6">
+            <div id="thread-list-container">
+              <ul id="thread-list">
+                <% _.each(threads, function(thread) { %>
+                  <li>
+                    <%- thread.updatedAt.toLocaleString() %> <a href="#" id="<%- thread.id %>"><%- thread.name %></a>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <form>
+                  <div class="form-group">
+                    <label for="text-new-thread-name">Thread name</label>
+                    <input type="text" class="form-control" id="text-new-thread-name" placeholder="New thread name" />
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" class="btn btn-default" id="btn-create-thread">Create thread</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <!-- thread/show -->
+    <script type="text/template" id="template-thread-show">
+      <h1><%- thread.name %></h1>
+
+      <div id="messages-container">
+        <dl id="message-list">
+          <% _.each(messages, function(message) { %>
+            <dt id="<%- message.id %>">
+              <a href="#"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="btn-reply">[Reply]</a>
+            </dt>
+            <dd><%= message.body %></dd>
+          <% }); %>
+        </dl>
+      </div>
+
+      <hr />
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form class="form">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="text-message-author" class="col-sm-2 control-label">Name: </label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="text-message-author" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="text-message-email" class="col-sm-2 control-label">Email: </label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="text-message-email" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <textarea id="textarea-message-body" class="form-control" cols="80" rows="10"></textarea>
+              <span class="help-block"></span>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-default" id="btn-post-message">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </script>
+
+    <!-- settings/index -->
+    <script type="text/template" id="template-settings-index">
+      <div>
+        <h3>Connection information</h3>
+        <table class="table">
+          <thead><tr><th>Item</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>State</td><td><%- state %></td></tr>
+            <tr><td>My peer ID</td><td><%- peerId %></td></tr>
+            <tr><td># of direct connected peers</td><td><%- directConnectedPeers.length %></td></tr>
+            <tr><td>Bootstrap candidates</td><td><%- peers %></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <h3>Joining threads</h3>
+        <table class="table">
+          <thead><tr><th>Thread name</th><th># of direct connected peers</th><th></th></tr></thead>
+          <tbody>
+            <% _.each(threadsInfo, function(threadInfo) { %>
+              <tr>
+                <td><%- threadInfo.thread.name %></td>
+                <td><%- threadInfo.directConnectedPeers.length %></td>
+                <td><button type="button" class="btn btn-leave-thread" id="<%- threadInfo.thread.id %>">Leave</button></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </script>
+  </body>
+</html>

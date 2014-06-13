@@ -1,0 +1,3 @@
+[submodule "lib/webrtc-chord"]
+	path = lib/webrtc-chord
+	url = git://github.com/tsujio/webrtc-chord.git
