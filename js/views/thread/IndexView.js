@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
   };
 
   IndexView.prototype = {
-    html: function(threads, alerts) {
+    html: function(threads, alerts, validator) {
       var self = this;
 
       if (!threads) {
@@ -19,7 +19,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
 
       this._$html.find("#form-create-thread").submit(function() {
         try {
-          self._createThread();
+          self._createThread(validator);
         } catch (e) {
           console.log("Failed to create thread:", e);
         }
@@ -27,7 +27,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       });
 
       this._$html.find("#btn-create-thread").click(function() {
-        self._createThread();
+        self._createThread(validator);
       });
 
       this._$html.find("#thread-list a").click(function(e) {
@@ -38,19 +38,21 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       return this._$html;
     },
 
-    _createThread: function() {
+    _createThread: function(validator) {
       var newThreadName = this._$html.find("#text-new-thread-name").val();
+      var params = {
+        name: newThreadName,
+        updatedAt: new Date()
+      };
 
-      if (!newThreadName) {
+      var msg = validator(params);
+      if (msg) {
         this._$html.find("#text-new-thread-name").parent("div.form-group").addClass("has-error");
-        this._$html.find("#text-new-thread-name").siblings("span.help-block").text("Input new thread name.");
+        this._$html.find("#text-new-thread-name").siblings("span.help-block").text(msg);
         return;
       }
 
-      WebRtcBbs.context.routing.to('/thread/create', {
-        name: newThreadName,
-        updatedAt: new Date()
-      });
+      WebRtcBbs.context.routing.to('/thread/create', params);
     }
   };
 

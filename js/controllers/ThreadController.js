@@ -4,8 +4,10 @@ define([
   'views/ApplicationView',
   'views/thread/IndexView',
   'views/thread/ShowView',
-  'models/Thread', 'utils/Utils'
-], function(_, ApplicationController, ApplicationView, IndexView, ShowView, Thread, Utils) {
+  'models/Thread',
+  'models/Message',
+  'utils/Utils'
+], function(_, ApplicationController, ApplicationView, IndexView, ShowView, Thread, Message, Utils) {
   var ThreadController = Utils.inherit(ApplicationController, function(networkAgent) {
     ApplicationController.call(this, networkAgent);
   });
@@ -29,7 +31,14 @@ define([
 
       self._response(format, {
         html: function() {
-          (new ApplicationView()).render(new IndexView(), threads, alerts);
+          (new ApplicationView()).render(new IndexView(), threads, alerts, function(params) {
+            try {
+              Thread.new(params);
+              return "";
+            } catch (e) {
+              return e.message;
+            }
+          });
         },
 
         json: function() {
@@ -93,7 +102,14 @@ define([
       thread.getMessages(function(messages) {
         self._response(format, {
           html: function() {
-            (new ApplicationView()).render(new ShowView(), thread, messages);
+            (new ApplicationView()).render(new ShowView(), thread, messages, function(params) {
+              try {
+                Message.new(params);
+                return "";
+              } catch (e) {
+                return e.message;
+              }
+            });
           },
 
           json: function() {

@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
   };
 
   ShowView.prototype = {
-    html: function(thread, messages) {
+    html: function(thread, messages, validator) {
       var self = this;
 
       if (!thread) {
@@ -25,7 +25,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
 
       this._$html.submit(function() {
         try {
-          self._postMessage(thread);
+          self._postMessage(thread, validator);
         } catch (e) {
           console.log("Failed to post message:", e);
         }
@@ -33,26 +33,28 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       });
 
       this._$html.find("#btn-post-message").click(function() {
-        self._postMessage(thread);
+        self._postMessage(thread, validator);
       });
 
       return this._$html;
     },
 
-    _postMessage: function(thread) {
+    _postMessage: function(thread, validator) {
       var body = this._$html.find("#textarea-message-body").val();
-
-      if (!body) {
-        this._$html.find("#textarea-message-body").parent("div.form-group").addClass("has-error");
-        this._$html.find("#textarea-message-body").siblings("span.help-block").text("Input message.");
-        return;
-      }
-
-      WebRtcBbs.context.routing.to('/message/create', {
+      var params = {
         threadId: thread.id,
         date: new Date(),
         body: body
-      });
+      };
+
+      var msg = validator(params);
+      if (msg) {
+        this._$html.find("#textarea-message-body").parent("div.form-group").addClass("has-error");
+        this._$html.find("#textarea-message-body").siblings("span.help-block").text(msg);
+        return;
+      }
+
+      WebRtcBbs.context.routing.to('/message/create', params);
     }
   };
 

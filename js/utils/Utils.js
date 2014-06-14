@@ -1,5 +1,9 @@
 define(['underscore'], function(_) {
   var Utils = {
+    normalizeLineFeedCode: function(str) {
+      return str.replace(/\r\n/, "\n").replace(/\r/, "\n");
+    },
+
     replaceCrLf: function(str) {
       return str.replace(/[\r\n]/g, "<br />");
     },

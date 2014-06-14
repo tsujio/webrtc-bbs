@@ -4,12 +4,17 @@ define([
   var Thread = Utils.inherit(BaseModel, function(params) {
     BaseModel.call(this, params);
 
-    if (!Utils.isNonemptyString(params.name) ||
-        (!Utils.isNonemptyString(params.updatedAt) && !_.isDate(params.updatedAt))) {
-      throw new Error("Invalid Options.");
+    if (!Utils.isNonemptyString(params.name)) {
+      throw new Error("Thread name must not be empty.");
+    }
+    if (_.size(params.name) > Thread.MAX_NAME_LENGTH) {
+      throw new Error("Thread name is too long. Max length is " + Thread.MAX_NAME_LENGTH + ".");
     }
     if (_.isString(params.updatedAt)) {
       params.updatedAt = new Date(params.updatedAt);
+    }
+    if (!_.isDate(params.updatedAt)) {
+      throw new Error("Invalid Option.");
     }
     if (_.isNaN(params.updatedAt.getTime())) {
       throw new Error("Invalid date.");
@@ -23,6 +28,8 @@ define([
 
   var MODEL_CLASS = Thread;
   var STORE_NAME = 'thread';
+
+  Thread.MAX_NAME_LENGTH = 127;
 
   Thread.all = function(callback) {
     BaseModel.all(MODEL_CLASS, STORE_NAME, callback);

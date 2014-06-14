@@ -5,9 +5,21 @@ define([
     BaseModel.call(this, params);
 
     if (!Utils.isNonemptyString(params.threadId) ||
-        !Utils.isNonemptyString(params.body) ||
         (!Utils.isNonemptyString(params.date) && !_.isDate(params.date))) {
       throw new Error("Invalid params.");
+    }
+    if (!Utils.isNonemptyString(params.body)) {
+      throw new Error("Message must not be empty.");
+    }
+    if (_.size(params.body) > Message.MAX_BODY_LENGTH) {
+      throw new Error("Message is too long. Max length is " + Message.MAX_BODY_LENGTH + ".");
+    }
+    params.body = Utils.normalizeLineFeedCode(params.body);
+    if (_.chain(params.body).filter(function(c) {
+      return c === "\n";
+    }).size().value() > Message.MAX_BODY_LINE) {
+      console.log(params.id);
+      throw new Error("Line length of message is too long. Max line length is " + Message.MAX_BODY_LINE + ".");
     }
     if (_.isString(params.date)) {
       params.date = new Date(params.date);
@@ -25,6 +37,9 @@ define([
 
   var MODEL_CLASS = Message;
   var STORE_NAME = 'message';
+
+  Message.MAX_BODY_LENGTH = 4096;
+  Message.MAX_BODY_LINE = 64;
 
   Message.all = function(callback) {
     BaseModel.all(MODEL_CLASS, STORE_NAME, callback);
