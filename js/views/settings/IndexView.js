@@ -1,10 +1,10 @@
 define(['jquery', 'underscore'], function($, _) {
-  var SettingsView = function() {
+  var IndexView = function() {
     this._template = _.template($("#template-settings-index").html());
     this._$html = null;
   };
 
-  SettingsView.prototype = {
+  IndexView.prototype = {
     html: function(state, peerId, directConnectedPeers, peers, threadsInfo) {
       this._$html = $(this._template({
         state: state,
@@ -23,5 +23,5 @@ define(['jquery', 'underscore'], function($, _) {
     }
   };
 
-  return SettingsView;
+  return IndexView;
 });
