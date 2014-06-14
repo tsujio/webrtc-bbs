@@ -19,10 +19,12 @@ define(['jquery', 'underscore'], function($, _) {
     });
 
     $("#nav-about").click(function() {
+      WebRtcBbs.context.routing.to('/about');
       return false;
     });
 
     $("#nav-contact").click(function() {
+      WebRtcBbs.context.routing.to('/contact');
       return false;
     });
 

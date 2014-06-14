@@ -2,12 +2,16 @@ define([
   'underscore',
   'controllers/ThreadController',
   'controllers/MessageController',
+  'controllers/AboutController',
+  'controllers/ContactController',
   'controllers/SettingsController'
-], function(_, ThreadController, MessageController, SettingsController) {
+], function(_, ThreadController, MessageController, AboutController, ContactController, SettingsController) {
   var Routing = function(networkAgent) {
     this._controllers = {
       threadController: new ThreadController(networkAgent),
       messageController: new MessageController(networkAgent),
+      aboutController: new AboutController(networkAgent),
+      contactController: new ContactController(networkAgent),
       settingsController: new SettingsController(networkAgent)
     };
   };
@@ -34,11 +38,7 @@ define([
         }
         elements.shift();
 
-        var controller = {
-          thread: self._controllers.threadController,
-          message: self._controllers.messageController,
-          settings: self._controllers.settingsController,
-        }[elements[0]];
+        var controller = self._controllers[elements[0] + 'Controller'];
         if (!controller) {
           throw new Error("Unknown controller: " + elements[0]);
         }
