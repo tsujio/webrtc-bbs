@@ -23,7 +23,7 @@ define([
 
         self._response(format, {
           html: function() {
-            WebRtcBbs.context.routing.to('/thread/show', {threadId: args.threadId});
+            WebRtcBbs.context.routing.to('/thread/show', {threadId: args.threadId}, true);
           }
         });
       });
