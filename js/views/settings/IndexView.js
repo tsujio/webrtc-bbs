@@ -6,6 +6,10 @@ define(['jquery', 'underscore'], function($, _) {
 
   IndexView.prototype = {
     html: function(state, peerId, directConnectedPeers, peers, threadsInfo) {
+      if (state === 'connecting') {
+        state = 'Trying to connect';
+      }
+
       this._$html = $(this._template({
         state: state,
         peerId: peerId,
