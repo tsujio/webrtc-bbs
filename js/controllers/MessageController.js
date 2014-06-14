@@ -8,6 +8,10 @@ define([
   MessageController.prototype.create = function(args, format) {
     var self = this;
 
+    if (!_.contains(this._networkAgent.getJoiningThreadIds(), args.threadId)) {
+      throw new Error("Unknown thread ID: " + args.threadId);
+    }
+
     Message.new(args).exists(function(exists) {
       Message.create(args, function(message, error) {
         if (error) {
