@@ -23,6 +23,13 @@ define([
       .compact()
       .value();
 
+    try {
+      this._networkAgent.checkPeerSetting();
+    } catch (e) {
+      alerts.push("The settings of this system is incomplete. " +
+                  "Please inform the administrator of the system about the following message: " + e.message);
+    }
+
     Thread.all(function(threads, error) {
       if (error) {
         console.log("Failed to get threads:", error);

@@ -237,6 +237,23 @@ define([
         throw new Error("Unknown thread ID: " + threadId);
       }
       return this._threadNetworks[threadId].getState();
+    },
+
+    checkPeerSetting: function() {
+      if (!_.isObject(this._config.peer)) {
+        throw new Error("Property 'peer' is required in config object.");
+      }
+      if (!_.isObject(this._config.peer.options)) {
+        throw new Error("Property 'options' is required in config.peer object.");
+      }
+      if (!Utils.isNonemptyString(this._config.peer.options.host) ||
+          this._config.peer.options.host === 'YOUR PEERSERVER HOST') {
+        throw new Error("Specify the PeerServer host used in the system.");
+      }
+      if (!Utils.isNonemptyString(this._config.peer.options.key) ||
+          this._config.peer.options.key === 'YOUR KEY') {
+        throw new Error("Specify the key for the PeerServer used in the system.");
+      }
     }
   };
 

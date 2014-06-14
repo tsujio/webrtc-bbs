@@ -1,13 +1,18 @@
 define([
   'jquery',
+  'underscore',
   'routing/Routing',
   'net/NetworkAgent',
   'db/DbManager',
   'tasks/UpdateBbsContentsTask',
   'tasks/MaintenanceNetworkTask',
   'utils/Utils'
-], function($, Routing, NetworkAgent, DbManager, UpdateBbsContentsTask, MaintenanceNetworkTask, Utils) {
+], function($, _, Routing, NetworkAgent, DbManager, UpdateBbsContentsTask, MaintenanceNetworkTask, Utils) {
   var main = function(config) {
+    if (!_.isObject(config)) {
+      throw new Error("Expect config to be an object.");
+    }
+
     Utils.enableDebugLog(config.debug);
 
     $(function() {
