@@ -131,18 +131,48 @@
     <script type="text/template" id="template-about-index">
       <h1>About</h1>
 
-      <h3>Requirements</h3>
+      <p>This is an anonymous Bulletin Board System using Peer-to-Peer (P2P) technology.</p>
+
+      <p>P2P is an architecture of distributed system which requires no central server in contrast to the client/server architecture. So P2P systems have high availability because there is no single point of failure.</p>
+
+      <p>This system enables you to <strong>anonymously</strong> publish your opinion and gives opportunity for considering about <strong>freedom</strong>.</p>
+
+      <h2>Requirements</h2>
       <p>This application requires the following HTML5 APIs.</p>
       <table class="table">
         <thead>
           <tr><th>Name</th><th>Supported on your browser</th><th>Check supported browsers</th></tr>
         </thead>
         <tbody>
-          <tr><td>WebRTC</td><td><%- requiredFunctions.WebRTC %></td><td><a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a></td></tr>
-          <tr><td>indexedDB</td><td><%- requiredFunctions.indexedDB %></td><td><a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a></td></tr>
-          <tr><td>history</td><td><%- requiredFunctions.history %></td><td><a href="http://caniuse.com/history">Can I use Session history management</a></td></tr>
+          <% _.each([
+               {
+                 name: 'WebRTC',
+                 supported: requiredFunctions.WebRTC,
+                 site: '<a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a>',
+               },
+               {
+                 name: 'indexedDB',
+                 supported: requiredFunctions.indexedDB,
+                 site: '<a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a>',
+               },
+               {
+                 name: 'history',
+                 supported: requiredFunctions.history,
+                 site: '<a href="http://caniuse.com/history">Can I use Session history management</a>',
+               }
+             ], function(item) { %>
+            <tr>
+              <td><%- item.name %></td>
+              <td><p class=<%- item.supported ? "text-success" : "text-danger" %>><%- item.supported %></p></td>
+              <td><%= item.site %></td>
+            </tr>
+          <% }); %>
         </tbody>
       </table>
+
+      <h2>Develop</h2>
+
+      <p>This system is Open Source Software developped in <a href="https://github.com/tsujio/webrtc-bbs">GitHub</a>.</p>
     </script>
 
     <!-- contact/index -->
