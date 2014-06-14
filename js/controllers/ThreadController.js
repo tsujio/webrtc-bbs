@@ -13,6 +13,14 @@ define([
   ThreadController.prototype.index = function(args, format, callback) {
     var self = this;
 
+    var requiredFunctions = Utils.listRequiredFunctions();
+    var alerts = _.chain(requiredFunctions)
+      .map(function(support, funcName) {
+        return support ? "" : funcName + " is not supported on your browser.";
+      })
+      .compact()
+      .value();
+
     Thread.all(function(threads, error) {
       if (error) {
         console.log("Failed to get threads:", error);
@@ -21,7 +29,7 @@ define([
 
       self._response(format, {
         html: function() {
-          (new ApplicationView()).render(new IndexView(), threads);
+          (new ApplicationView()).render(new IndexView(), threads, alerts);
         },
 
         json: function() {

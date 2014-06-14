@@ -22,6 +22,14 @@ define(['underscore'], function(_) {
       return subClass;
     },
 
+    listRequiredFunctions: function() {
+      return {
+        WebRTC: !!(window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection),
+        indexedDB: !!window.indexedDB,
+        history: !!window.history,
+      };
+    },
+
     enableDebugLog: function(enabled) {
       Utils.debug = function() {
         if (enabled) {

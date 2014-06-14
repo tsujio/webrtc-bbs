@@ -38,6 +38,14 @@
           <p class="lead">This is an anonymous BBS using Peer-to-Peer (P2P) technology. </p>
         </div>
 
+        <% if (!_.isEmpty(alerts)) { %>
+          <div class="alert alert-danger">
+            <% _.each(alerts, function(alert) { %>
+              <p><%- alert %></p>
+            <% }); %>
+          </div>
+        <% } %>
+
         <div class="row marketing">
           <div class="col-lg-6">
             <div id="thread-list-container">

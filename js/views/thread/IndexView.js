@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
   };
 
   IndexView.prototype = {
-    html: function(threads) {
+    html: function(threads, alerts) {
       var self = this;
 
       if (!threads) {
@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       threads = _.sortBy(threads, 'updatedAt');
       threads.reverse();
 
-      this._$html = $(this._template({threads: threads}));
+      this._$html = $(this._template({threads: threads, alerts: alerts}));
 
       this._$html.find("#form-create-thread").submit(function() {
         try {
