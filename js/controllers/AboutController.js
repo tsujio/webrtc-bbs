@@ -10,9 +10,11 @@ define([
   });
 
   AboutController.prototype.index = function(args, format) {
+    var requiredFunctions = Utils.listRequiredFunctions();
+
     this._response(format, {
       html: function() {
-        (new ApplicationView()).render(new IndexView());
+        (new ApplicationView()).render(new IndexView(), requiredFunctions);
       }
     });
   };

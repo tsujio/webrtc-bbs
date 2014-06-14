@@ -5,8 +5,8 @@ define(['jquery', 'underscore'], function($, _) {
   };
 
   IndexView.prototype = {
-    html: function() {
-      this._$html = $(this._template());
+    html: function(requiredFunctions) {
+      this._$html = $(this._template({requiredFunctions: requiredFunctions}));
       return this._$html;
     }
   };

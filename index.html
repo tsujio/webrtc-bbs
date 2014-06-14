@@ -130,6 +130,19 @@
     <!-- about/index -->
     <script type="text/template" id="template-about-index">
       <h1>About</h1>
+
+      <h3>Requirements</h3>
+      <p>This application requires the following HTML5 APIs.</p>
+      <table class="table">
+        <thead>
+          <tr><th>Name</th><th>Supported on your browser</th><th>Check supported browsers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>WebRTC</td><td><%- requiredFunctions.WebRTC %></td><td><a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a></td></tr>
+          <tr><td>indexedDB</td><td><%- requiredFunctions.indexedDB %></td><td><a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a></td></tr>
+          <tr><td>history</td><td><%- requiredFunctions.history %></td><td><a href="http://caniuse.com/history">Can I use Session history management</a></td></tr>
+        </tbody>
+      </table>
     </script>
 
     <!-- contact/index -->
