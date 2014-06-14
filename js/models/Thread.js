@@ -47,7 +47,7 @@ define([
   Thread.update = function(paramsList, callback) {
     try {
       _.each(paramsList, function(params) {
-        Thread.new(_.extend({name: "", updatedAt: new Date()}, params));
+        Thread.new(_.extend({name: "dummy", updatedAt: new Date()}, params));
       });
     } catch (e) {
       if (callback) {
