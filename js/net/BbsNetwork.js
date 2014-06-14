@@ -142,7 +142,9 @@ define([
        this._chord.sendMessage(null, request.toJson());
       } catch (e) {
         clearTimeout(timer);
-        callbacks.error(e);
+        if (callbacks) {
+          callbacks.error(e);
+        }
       }
     },
 
