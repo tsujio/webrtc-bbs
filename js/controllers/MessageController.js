@@ -34,5 +34,13 @@ define([
     });
   };
 
+  MessageController.prototype.delete = function(args, format) {
+    Message.delete(args.id, function(error) {
+      if (error) {
+        throw error;
+      }
+    });
+  };
+
   return MessageController;
 });
