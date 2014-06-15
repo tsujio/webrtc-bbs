@@ -33,9 +33,7 @@ define([
             return;
           }
 
-          Utils.debug("[UpdateBbsContentsTask] retrieved threads:", _.map(threadsInfo, function(t) {
-            return t.id;
-          }).toString());
+          Utils.debug("[UpdateBbsContentsTask] retrieved threads:", threadsInfo);
 
           Thread.createAll(threadsInfo);
         });
@@ -59,9 +57,7 @@ define([
               return;
             }
 
-            Utils.debug("[UpdateBbsContentsTask] retrieved messages:", _.map(messagesInfo, function(m) {
-              return m.id;
-            }).toString());
+            Utils.debug("[UpdateBbsContentsTask] retrieved messages:", messagesInfo);
 
             Message.createAll(messagesInfo);
           });
