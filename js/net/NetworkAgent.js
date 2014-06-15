@@ -169,8 +169,11 @@ define([
     },
 
     _replacePeerId: function(config, prefix) {
-      config.peer.id = prefix + (Math.random().toString(36) + '0000000000000000000').substr(2, 16);
-      return config;
+      var _config = _.clone(config);
+      _config.peer = _.clone(config.peer);
+      _config.peer.options = _.clone(config.peer.options);
+      _config.peer.id = prefix + (Math.random().toString(36) + '0000000000000000000').substr(2, 16);
+      return _config;
     },
 
     _getBootstrapIds: function(callback) {
