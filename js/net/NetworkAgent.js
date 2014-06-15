@@ -65,20 +65,20 @@ define([
       Utils.debug("Left thread list network.");
     },
 
-    fetchThreads: function(callback) {
-      this._threadListNetwork.fetchThreads(callback);
+    fetchThreads: function(excludeIds, callback) {
+      this._threadListNetwork.fetchThreads(excludeIds, callback);
     },
 
     spreadThread: function(threadInfo) {
       this._threadListNetwork.spreadThread(threadInfo);
     },
 
-    fetchMessages: function(threadId, callback) {
+    fetchMessages: function(threadId, excludeIds, callback) {
       if (!_.has(this._threadNetworks, threadId)) {
         return callback(new Error("Unknown thread ID: " + threadId));
       }
 
-      this._threadNetworks[threadId].fetchMessages(threadId, callback);
+      this._threadNetworks[threadId].fetchMessages(threadId, excludeIds, callback);
     },
 
     spreadMessage: function(messageInfo) {

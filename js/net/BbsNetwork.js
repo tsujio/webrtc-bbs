@@ -54,8 +54,8 @@ define([
       this._state = 'initialized';
     },
 
-    fetchThreads: function(callback) {
-      this._sendRequest('RECENT', {}, {
+    fetchThreads: function(excludeIds, callback) {
+      this._sendRequest('RECENT', {excludeIds: excludeIds}, {
         success: function(result) {
           if (!_.isArray(result.threadsInfo)) {
             callback(null, new Error("Received invalid data."));
@@ -74,8 +74,8 @@ define([
       this._sendRequest('NEW', {threadInfo: threadInfo});
     },
 
-    fetchMessages: function(threadId, callback) {
-      this._sendRequest('GET', {threadId: threadId}, {
+    fetchMessages: function(threadId, excludeIds, callback) {
+      this._sendRequest('GET', {threadId: threadId, excludeIds: excludeIds}, {
         success: function(result) {
           if (!_.isArray(result.messagesInfo)) {
             callback(null, new Error("Received invalid data."));

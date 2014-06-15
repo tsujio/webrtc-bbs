@@ -36,6 +36,16 @@ define([
         threads = [];
       }
 
+      if (args && args.excludeIds) {
+        if (!_.isArray(args.excludeIds)) {
+          throw new Error("Invalid args.");
+        }
+
+        threads = _.reject(threads, function(thread) {
+          return _.contains(args.excludeIds, thread.id);
+        });
+      }
+
       self._response(format, {
         html: function() {
           (new ApplicationView()).render(new IndexView(), threads, alerts, function(params) {
@@ -88,7 +98,7 @@ define([
   ThreadController.prototype.show = function(args, format, callback) {
     var self = this;
 
-    if (!args.threadId) {
+    if (!args || !args.threadId) {
       throw new Error("Thread ID is required.");
     }
 
@@ -106,7 +116,21 @@ define([
         throw new Error("Failed to get thread:", error);
       }
 
-      thread.getMessages(function(messages) {
+      thread.getMessages(function(messages, error) {
+        if (error) {
+          throw new Error("Failed to get messages:", error);
+        }
+
+        if (args.excludeIds) {
+          if (!_.isArray(args.excludeIds)) {
+            throw new Error("Invalid args.");
+          }
+
+          messages = _.reject(messages, function(message) {
+            return _.contains(args.excludeIds, message.id);
+          });
+        }
+
         self._response(format, {
           html: function() {
             (new ApplicationView()).render(new ShowView(), thread, messages, function(params) {

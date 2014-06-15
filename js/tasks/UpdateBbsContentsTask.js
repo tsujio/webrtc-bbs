@@ -19,34 +19,52 @@ define([
     var self = this;
 
     if (this._networkAgent.getState() === 'connected') {
-      this._networkAgent.fetchThreads(function(threadsInfo, error) {
+      Thread.all(function(threads, error) {
         if (error) {
-          console.log(error);
+          console.log("Failed to get threads:", error);
           return;
         }
 
-        Utils.debug("[UpdateBbsContentsTask] retrieved threads:", _.map(threadsInfo, function(t) {
-          return t.id;
-        }).toString());
+        self._networkAgent.fetchThreads(_.map(threads, function(thread) {
+          return thread.id;
+        }), function(threadsInfo, error) {
+          if (error) {
+            console.log("Failed to fetch threads:", error);
+            return;
+          }
 
-        Thread.createAll(threadsInfo);
+          Utils.debug("[UpdateBbsContentsTask] retrieved threads:", _.map(threadsInfo, function(t) {
+            return t.id;
+          }).toString());
+
+          Thread.createAll(threadsInfo);
+        });
       });
     }
 
     var threadIds = this._networkAgent.getJoiningThreadIds();
     _.each(threadIds, function(threadId) {
       if (self._networkAgent.getState(threadId) === 'connected') {
-        self._networkAgent.fetchMessages(threadId, function(messagesInfo, error) {
+        Message.find({threadId: threadId}, function(messages, error) {
           if (error) {
-            console.log(error);
+            console.log("Failed to get messages:", error);
             return;
           }
 
-          Utils.debug("[UpdateBbsContentsTask] retrieved messages:", _.map(messagesInfo, function(m) {
-            return m.id;
-          }).toString());
+          self._networkAgent.fetchMessages(threadId, _.map(messages, function(message) {
+            return message.id;
+          }), function(messagesInfo, error) {
+            if (error) {
+              console.log("Failed to fetch messages:", error);
+              return;
+            }
 
-          Message.createAll(messagesInfo);
+            Utils.debug("[UpdateBbsContentsTask] retrieved messages:", _.map(messagesInfo, function(m) {
+              return m.id;
+            }).toString());
+
+            Message.createAll(messagesInfo);
+          });
         });
       }
     });
