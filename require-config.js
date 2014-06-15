@@ -34,9 +34,9 @@ require(['main', 'bootstrap'], function(main) {
   main({
     peer: {
       options: {
-        host: 'YOUR PEERSERVER HOST',
+        host: window.location.hostname,
         port: 9000,
-        key: 'YOUR KEY',
+        key: 'webrtc-bbs'
       }
     },
   });
