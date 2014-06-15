@@ -97,7 +97,7 @@ define([
   };
 
   Message.prototype._createId = function() {
-    return CryptoJS.SHA256(this.threadId + this.date.toString() + this.body).toString();
+    return CryptoJS.SHA256(this.threadId + this.date.toISOString() + this.body).toString();
   };
 
   Message.prototype.save = function(callback) {
