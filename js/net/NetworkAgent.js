@@ -5,9 +5,7 @@ define([
     var self = this;
 
     this._config = config;
-    this._threadListNetwork = new BbsNetwork(this._replacePeerId(
-      config, 'T'
-    ), function(fromPeerId, request, callback) {
+    this._threadListNetwork = new BbsNetwork(this._buildConfig('T'), function(fromPeerId, request, callback) {
       self._onRequestReceived(fromPeerId, request, callback);
     });
     this._threadNetworks = {};
@@ -94,9 +92,7 @@ define([
 
       Utils.debug("Trying to join thread network (thread ID", threadId, ")");
 
-      var threadNetwork = new BbsNetwork(this._replacePeerId(
-        this._config, 't'
-      ), function(fromPeerId, request, callback) {
+      var threadNetwork = new BbsNetwork(this._buildConfig('t'), function(fromPeerId, request, callback) {
         self._onRequestReceived(fromPeerId, request, callback);
       });
       this._threadNetworks[threadId] = threadNetwork;
@@ -168,16 +164,19 @@ define([
       Utils.debug("Left thread network (thread ID:", threadId, ")");
     },
 
-    _replacePeerId: function(config, prefix) {
-      var _config = _.clone(config);
-      _config.peer = _.clone(config.peer);
-      _config.peer.options = _.clone(config.peer.options);
+    _buildConfig: function(prefix) {
+      var _config = _.clone(this._config);
+      _config.peer = _.clone(this._config.peer);
+      _config.peer.options = _.clone(this._config.peer.options);
       _config.peer.id = prefix + (Math.random().toString(36) + '0000000000000000000').substr(2, 16);
+      if (!_config.peer.options.host) {
+        _config.peer.options.host = 'localhost';
+      }
       return _config;
     },
 
     _getBootstrapIds: function(callback) {
-      var options = this._config.peer.options;
+      var options = this._buildConfig('').peer.options;
       var url = 'http://' + options.host + ':' + options.port + '/' + options.key + '/peers';
       $.ajax({
         url: url,
@@ -249,12 +248,10 @@ define([
       if (!_.isObject(this._config.peer.options)) {
         throw new Error("Property 'options' is required in config.peer object.");
       }
-      if (!Utils.isNonemptyString(this._config.peer.options.host) ||
-          this._config.peer.options.host === 'YOUR PEERSERVER HOST') {
+      if (!Utils.isNonemptyString(this._config.peer.options.host)) {
         throw new Error("Specify the PeerServer host used in the system.");
       }
-      if (!Utils.isNonemptyString(this._config.peer.options.key) ||
-          this._config.peer.options.key === 'YOUR KEY') {
+      if (!Utils.isNonemptyString(this._config.peer.options.key)) {
         throw new Error("Specify the key for the PeerServer used in the system.");
       }
     }
