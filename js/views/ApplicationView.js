@@ -37,6 +37,7 @@ define(['jquery', 'underscore'], function($, _) {
   ApplicationView.prototype = {
     render: function(view) {
       $("#contents").html(view.html.apply(view, _.rest(arguments)));
+      view.onrendered.apply(view, _.rest(arguments));
     }
   };
 

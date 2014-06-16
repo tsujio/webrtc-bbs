@@ -1,13 +1,14 @@
 define(['jquery', 'underscore'], function($, _) {
   var IndexView = function() {
     this._template = _.template($("#template-contact-index").html());
-    this._$html = null;
   };
 
   IndexView.prototype = {
     html: function() {
-      this._$html = $(this._template());
-      return this._$html;
+      return this._template();
+    },
+
+    onrendered: function() {
     }
   };
 
