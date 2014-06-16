@@ -33,6 +33,7 @@
 
     <!-- thread/index -->
     <script type="text/template" id="template-thread-index">
+      <div>
         <div class="jumbotron">
           <h1>P2P Anonymous BBS</h1>
           <p class="lead">This is an anonymous BBS using Peer-to-Peer (P2P) technology. </p>
@@ -74,170 +75,181 @@
             </div>
           </div>
         </div>
+      </div>
     </script>
 
     <!-- thread/show -->
     <script type="text/template" id="template-thread-show">
-      <h1><%- thread.name %></h1>
+      <div>
+        <h1><%- thread.name %></h1>
 
-      <div id="messages-container">
-        <dl id="message-list">
-          <% _.each(messages, function(message) { %>
-            <dt id="<%- message.id %>">
-              <a href="#" class="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" class="a-reply">[Reply]</a>
-            </dt>
-            <dd><%= message.body %></dd>
-          <% }); %>
-        </dl>
-      </div>
+        <div id="messages-container">
+          <dl id="message-list">
+            <% _.each(messages, function(message) { %>
+              <dt id="<%- message.id %>">
+                <a href="#" class="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" class="a-reply">[Reply]</a>
+              </dt>
+              <dd><%= message.body %></dd>
+            <% }); %>
+          </dl>
+        </div>
 
-      <hr />
-      <div class="panel panel-default" id="panel-post-message">
-        <div class="panel-body">
-          <form class="form" id="form-post-message">
-            <div class="form-group">
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="text-message-author" class="col-sm-2 control-label">Name: </label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="text-message-author" />
+        <hr />
+        <div class="panel panel-default" id="panel-post-message">
+          <div class="panel-body">
+            <form class="form" id="form-post-message">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="text-message-author" class="col-sm-2 control-label">Name: </label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="text-message-author" />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="text-message-email" class="col-sm-2 control-label">Email: </label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="text-message-email" />
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="text-message-email" class="col-sm-2 control-label">Email: </label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="text-message-email" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="form-group">
-              <textarea id="textarea-message-body" class="form-control" cols="80" rows="10"></textarea>
-              <span class="help-block"></span>
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-default" id="btn-post-message">Post</button>
-            </div>
-          </form>
+              <div class="form-group">
+                <textarea id="textarea-message-body" class="form-control" cols="80" rows="10"></textarea>
+                <span class="help-block"></span>
+              </div>
+              <div class="form-group">
+                <button type="button" class="btn btn-default" id="btn-post-message">Post</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </script>
 
     <!-- message/show -->
     <script type="text/template" id="template-message-show">
-      <dl>
-        <dt id="<%- message.id %>">
-          <a href="#" id="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="a-reply">[Reply]</a> <button type="button" class="btn btn-sm" id="btn-delete-message">Delete</button>
-        </dt>
-        <dd><%= message.body %></dd>
-      </dl>
+      <div>
+        <dl>
+          <dt id="<%- message.id %>">
+            <a href="#" id="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="a-reply">[Reply]</a> <button type="button" class="btn btn-sm" id="btn-delete-message">Delete</button>
+          </dt>
+          <dd><%= message.body %></dd>
+        </dl>
+      </div>
     </script>
 
     <!-- about/index -->
     <script type="text/template" id="template-about-index">
-      <h1>About</h1>
+      <div>
+        <h1>About</h1>
 
-      <p>This is an anonymous Bulletin Board System using Peer-to-Peer (P2P) technology.</p>
+        <p>This is an anonymous Bulletin Board System using Peer-to-Peer (P2P) technology.</p>
 
-      <p>P2P is an architecture of distributed system which requires no central server in contrast to the client/server architecture. So P2P systems have high availability because there is no single point of failure.</p>
+        <p>P2P is an architecture of distributed system which requires no central server in contrast to the client/server architecture. So P2P systems have high availability because there is no single point of failure.</p>
 
-      <p>This system enables you to <strong>anonymously</strong> publish your opinion and gives opportunity for considering about <strong>freedom</strong>.</p>
+        <p>This system enables you to <strong>anonymously</strong> publish your opinion and gives opportunity for considering about <strong>freedom</strong>.</p>
 
-      <h2>Requirements</h2>
-      <p>This application requires the following HTML5 APIs.</p>
-      <table class="table">
-        <thead>
-          <tr><th>Name</th><th>Supported on your browser</th><th>Check supported browsers</th></tr>
-        </thead>
-        <tbody>
-          <% _.each([
-               {
-                 name: 'WebRTC',
-                 supported: requiredFunctions.WebRTC,
-                 site: '<a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a>',
-               },
-               {
-                 name: 'indexedDB',
-                 supported: requiredFunctions.indexedDB,
-                 site: '<a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a>',
-               },
-               {
-                 name: 'history',
-                 supported: requiredFunctions.history,
-                 site: '<a href="http://caniuse.com/history">Can I use Session history management</a>',
-               }
-             ], function(item) { %>
-            <tr>
-              <td><%- item.name %></td>
-              <td><p class=<%- item.supported ? "text-success" : "text-danger" %>><%- item.supported %></p></td>
-              <td><%= item.site %></td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
+        <h2>Requirements</h2>
+        <p>This application requires the following HTML5 APIs.</p>
+        <table class="table">
+          <thead>
+            <tr><th>Name</th><th>Supported on your browser</th><th>Check supported browsers</th></tr>
+          </thead>
+          <tbody>
+            <% _.each([
+                 {
+                   name: 'WebRTC',
+                   supported: requiredFunctions.WebRTC,
+                   site: '<a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a>',
+                 },
+                 {
+                   name: 'indexedDB',
+                   supported: requiredFunctions.indexedDB,
+                   site: '<a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a>',
+                 },
+                 {
+                   name: 'history',
+                   supported: requiredFunctions.history,
+                   site: '<a href="http://caniuse.com/history">Can I use Session history management</a>',
+                 }
+               ], function(item) { %>
+              <tr>
+                <td><%- item.name %></td>
+                <td><p class=<%- item.supported ? "text-success" : "text-danger" %>><%- item.supported %></p></td>
+                <td><%= item.site %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
 
-      <h2>Develop</h2>
+        <h2>Develop</h2>
 
-      <p>This system is Open Source Software developped in <a href="https://github.com/tsujio/webrtc-bbs">GitHub</a>.</p>
+        <p>This system is Open Source Software developped in <a href="https://github.com/tsujio/webrtc-bbs">GitHub</a>.</p>
+      </div>
     </script>
 
     <!-- contact/index -->
     <script type="text/template" id="template-contact-index">
-      <h1>Contact</h1>
+      <div>
+        <h1>Contact</h1>
 
-      <h3>Bug report</h3>
-      <p><a href="https://github.com/tsujio/webrtc-bbs/issues">Issues - tsujio/webrtc-bbs</a></p>
+        <h3>Bug report</h3>
+        <p><a href="https://github.com/tsujio/webrtc-bbs/issues">Issues - tsujio/webrtc-bbs</a></p>
 
-      <h3>Authors</h3>
-      <dl>
-        <dt>Naoki Tsujio</dt>
-        <dd>
-          <ul>
-            <li><a href="https://github.com/tsujio">GitHub</a></li>
-          </ul>
-        </dd>
-      </dl>
+        <h3>Authors</h3>
+        <dl>
+          <dt>Naoki Tsujio</dt>
+          <dd>
+            <ul>
+              <li><a href="https://github.com/tsujio">GitHub</a></li>
+            </ul>
+          </dd>
+        </dl>
 
-      <h3>Contributors</h3>
-      <ul>
-        <li>Naoki Tsujio</li>
-        <li>and you</li>
-      </ul>
+        <h3>Contributors</h3>
+        <ul>
+          <li>Naoki Tsujio</li>
+          <li>and you</li>
+        </ul>
+      </div>
     </script>
 
     <!-- settings/index -->
     <script type="text/template" id="template-settings-index">
       <div>
-        <h3>Connection information</h3>
-        <table class="table">
-          <thead><tr><th>Item</th><th>Value</th></tr></thead>
-          <tbody>
-            <tr><td>State</td><td><%- state %></td></tr>
-            <tr><td>My peer ID</td><td><%- peerId %></td></tr>
-            <tr><td># of direct connected peers</td><td><%- directConnectedPeers.length %></td></tr>
-            <tr><td>Bootstrap candidates</td><td><%- peers %></tr>
-          </tbody>
-        </table>
-      </div>
+        <div>
+          <h3>Connection information</h3>
+          <table class="table">
+            <thead><tr><th>Item</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>State</td><td><%- state %></td></tr>
+              <tr><td>My peer ID</td><td><%- peerId %></td></tr>
+              <tr><td># of direct connected peers</td><td><%- directConnectedPeers.length %></td></tr>
+              <tr><td>Bootstrap candidates</td><td><%- peers %></tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div>
-        <h3>Joining threads</h3>
-        <table class="table">
-          <thead><tr><th>Thread name</th><th># of direct connected peers</th><th></th></tr></thead>
-          <tbody>
-            <% _.each(threadsInfo, function(threadInfo) { %>
-              <tr>
-                <td><%- threadInfo.thread.name %></td>
-                <td><%- threadInfo.directConnectedPeers.length %></td>
-                <td><button type="button" class="btn btn-leave-thread" id="<%- threadInfo.thread.id %>">Leave</button></td>
-              </tr>
-            <% }); %>
-          </tbody>
-        </table>
+        <div>
+          <h3>Joining threads</h3>
+          <table class="table">
+            <thead><tr><th>Thread name</th><th># of direct connected peers</th><th></th></tr></thead>
+            <tbody>
+              <% _.each(threadsInfo, function(threadInfo) { %>
+                <tr>
+                  <td><%- threadInfo.thread.name %></td>
+                  <td><%- threadInfo.directConnectedPeers.length %></td>
+                  <td><button type="button" class="btn btn-leave-thread" id="<%- threadInfo.thread.id %>">Leave</button></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </script>
   </body>
