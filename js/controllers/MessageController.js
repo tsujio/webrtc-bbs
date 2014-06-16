@@ -1,6 +1,12 @@
 define([
-  'underscore', 'controllers/ApplicationController', 'models/Thread', 'models/Message', 'utils/Utils'
-], function(_, ApplicationController, Thread, Message, Utils) {
+  'underscore',
+  'controllers/ApplicationController',
+  'models/Thread',
+  'models/Message',
+  'views/ApplicationView',
+  'views/message/ShowView',
+  'utils/Utils'
+], function(_, ApplicationController, Thread, Message, ApplicationView, ShowView, Utils) {
   var MessageController = Utils.inherit(ApplicationController, function(networkAgent) {
     ApplicationController.call(this, networkAgent);
   });
@@ -34,11 +40,47 @@ define([
     });
   };
 
-  MessageController.prototype.delete = function(args, format) {
-    Message.delete(args.id, function(error) {
+  MessageController.prototype.show = function(args, format) {
+    var self = this;
+
+    if (!args || !args.messageId) {
+      throw new Error("Message ID is required.");
+    }
+
+    Message.get(args.messageId, function(message, error) {
       if (error) {
         throw error;
       }
+
+      self._response(format, {
+        html: function() {
+          (new ApplicationView()).render(new ShowView(), message);
+        }
+      });
+    });
+  };
+
+  MessageController.prototype.delete = function(args, format) {
+    var self = this;
+
+    if (!args.messageId) {
+      throw new Error("Required message ID.");
+    }
+
+    Message.delete(args.messageId, function(error) {
+      if (error) {
+        throw error;
+      }
+
+      self._response(format, {
+        html: function() {
+          if (args.threadId) {
+            WebRtcBbs.context.routing.to('/thread/show', {threadId: args.threadId});
+          } else {
+            WebRtcBbs.context.routing.to('/thread');
+          }
+        }
+      });
     });
   };
 

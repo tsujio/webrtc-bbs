@@ -32,6 +32,12 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
         return false;
       });
 
+      this._$html.find("#message-list a.a-message-show").click(function() {
+        var messageId = $(this).parent().attr("id");
+        WebRtcBbs.context.routing.to('/message/show', {messageId: messageId});
+        return false;
+      });
+
       this._$html.find("#btn-post-message").click(function() {
         self._postMessage(thread, validator);
       });
