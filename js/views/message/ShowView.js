@@ -34,6 +34,10 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
           threadId: message.threadId
         });
       });
+
+      $("#dd-message-body a").click(function() {
+        return false;
+      });
     }
   };
 

@@ -32,7 +32,8 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       });
 
       $("#thread-list a").click(function(e) {
-        WebRtcBbs.context.routing.to('/thread/show', {threadId: e.target.id});
+        var threadId = Utils.parseQueryString($(this).attr('href')).threadId;
+        WebRtcBbs.context.routing.to('/thread/show', {threadId: threadId});
         return false;
       });
     },

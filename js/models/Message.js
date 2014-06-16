@@ -127,8 +127,9 @@ define([
   Message.prototype.createProcessedMessage = function() {
     var message = Message.new(this.toJson());
     message.body = _.escape(message.body);
-    message.body = message.body.replace(RegExp("(" + _.escape(">>") + "[0-9a-fA-F]+)", 'g'),
-                                        "<a href=\"#\">$1</a>");
+    message.body = message.body.replace(
+      RegExp("(" + _.escape(">>") + ")(" + "[0-9a-fA-F]+)", 'g'),
+      "<a href=\"/thread/show?threadId=" + message.threadId + "&messageId=$2\">$1$2</a>");
     message.body = Utils.replaceCrLf(message.body);
     return message;
   };

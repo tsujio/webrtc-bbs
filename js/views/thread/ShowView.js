@@ -32,18 +32,31 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       });
 
       $("#message-list a.a-message-show").click(function() {
-        var messageId = $(this).parent().attr("id");
+        var messageId = Utils.parseQueryString($(this).attr('href')).messageId;
         WebRtcBbs.context.routing.to('/message/show', {messageId: messageId});
         return false;
       });
 
       $("#message-list a.a-reply").click(function() {
-        var messageId = $(this).parent().attr("id");
+        var messageId = Utils.parseQueryString($(this).attr('href')).messageId;
         WebRtcBbs.context.routing.to('/thread/show', {
           threadId: thread.id,
           fillInMessage: ">>" + messageId.substr(0, 8) + "\n"
         });
         return false;
+      });
+
+      $("#message-list dd a").click(function() {
+        var messageId = Utils.parseQueryString($(this).attr('href')).messageId;
+        if (messageId) {
+          var targets = _.filter($("#message-list dt"), function(dt) {
+            return dt.id.indexOf(messageId) === 0;
+          });
+          if (targets.length > 0) {
+            $(window).scrollTop($(targets[0]).offset().top);
+          }
+          return false;
+        }
       });
 
       $("#btn-post-message").click(function() {

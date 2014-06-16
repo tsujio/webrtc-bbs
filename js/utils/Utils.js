@@ -34,6 +34,18 @@ define(['underscore'], function(_) {
       };
     },
 
+    parseQueryString: function(url) {
+      var split = url.split('?');
+      if (_.size(split) < 2) {
+        return {};
+      }
+
+      return _.chain(split[1].split('&'))
+        .map(function(s) { return s.split('='); })
+        .object()
+        .value();
+    },
+
     enableDebugLog: function(enabled) {
       Utils.debug = function() {
         if (enabled) {
