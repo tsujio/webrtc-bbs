@@ -3,6 +3,18 @@ webrtc-bbs
 
 An Anonymous BBS over P2P network by web browsers using WebRTC.
 
+## Easy Try
+If you have a [Docker](http://www.docker.com) environment, it is very easy to try it.
+
+```sh
+docker pull tsujio/peerjs-server
+docker pull tsujio/webrtc-bbs
+docker run -d -p 9000:9000 tsujio/peerjs-server
+docker run -d -p 80:80 tsujio/webrtc-bbs
+```
+
+Then open `http://<IP address of the docker engine host>` by your WebRTC enabled browser.
+
 ## Requirements
 webrtc-bbs requires [WebRTC](http://www.webrtc.org/), so check if your
 browser supports WebRTC.
