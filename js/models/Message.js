@@ -124,6 +124,15 @@ define([
     BaseModel.prototype.destroy.call(this, STORE_NAME, callback);
   };
 
+  Message.prototype.createProcessedMessage = function() {
+    var message = Message.new(this.toJson());
+    message.body = _.escape(message.body);
+    message.body = message.body.replace(RegExp("(" + _.escape(">>") + "[0-9a-fA-F]+)", 'g'),
+                                        "<a href=\"#\">$1</a>");
+    message.body = Utils.replaceCrLf(message.body);
+    return message;
+  };
+
   Message.prototype.toJson = function() {
     var record = this.toRecord();
     return _.extend(record, {date: record.date.toISOString()});

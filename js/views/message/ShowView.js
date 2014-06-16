@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
         return null;
       }
 
-      message.body = Utils.replaceCrLf(_.escape(message.body));
+      message = message.createProcessedMessage();
 
       this._$html = $(this._template({message: message}));
 

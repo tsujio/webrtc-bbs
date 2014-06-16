@@ -17,9 +17,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
 
       messages = _.sortBy(messages, 'date');
 
-      _.each(messages, function(message) {
-        message.body = Utils.replaceCrLf(_.escape(message.body));
-      });
+      messages = _.map(messages, function(message) { return message.createProcessedMessage(); });
 
       this._$html = $(this._template({thread: thread, messages: messages}));
 
