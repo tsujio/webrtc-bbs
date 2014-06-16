@@ -51,7 +51,7 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
       });
 
       if (fillInMessage) {
-        $("#textarea-message-body").val(fillInMessage);
+        $("#textarea-message-body").focus().val(fillInMessage);
         $(window).scrollTop($("#panel-post-message").offset().top);
       }
     },
