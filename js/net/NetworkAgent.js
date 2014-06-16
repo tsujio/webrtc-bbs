@@ -154,11 +154,16 @@ define([
     },
 
     leaveThreadNetwork: function(threadId) {
+      var self = this;
+
       if (!_.has(this._threadNetworks, threadId)) {
         throw new Error("Unknown thread ID: " + threadId);
       }
-      this._threadListNetwork.removeEntry(threadId, this._threadNetworks[threadId].getPeerId());
-      this._threadNetworks[threadId].leaveNetwork();
+      this._threadNetworks[threadId].getPeerId(function(peerId) {
+        self._threadListNetwork.removeEntry(threadId, peerId);
+        self._threadNetworks[threadId].leaveNetwork();
+      });
+      
       delete this._threadNetworks[threadId];
 
       Utils.debug("Left thread network (thread ID:", threadId, ")");
@@ -207,38 +212,38 @@ define([
       return _.keys(this._threadNetworks);
     },
 
-    getPeerId: function(threadId) {
+    getPeerId: function(threadId, callback) {
       if (!threadId) {
-        return this._threadListNetwork.getPeerId();
+        return this._threadListNetwork.getPeerId(callback);
       }
       if (!_.has(this._threadNetworks, threadId)) {
         throw new Error("Unknown thread ID: " + threadId);
       }
-      return this._threadNetworks[threadId].getPeerId();
+      return this._threadNetworks[threadId].getPeerId(callback);
     },
 
     getPeers: function() {
       return this._peers;
     },
 
-    getDirectConnectedPeers: function(threadId) {
+    getDirectConnectedPeers: function(threadId, callback) {
       if (!threadId) {
-        return this._threadListNetwork.getDirectConnectedPeers();
+        return this._threadListNetwork.getDirectConnectedPeers(callback);
       }
       if (!_.has(this._threadNetworks, threadId)) {
         throw new Error("Unknown thread ID: " + threadId);
       }
-      return this._threadNetworks[threadId].getDirectConnectedPeers();
+      return this._threadNetworks[threadId].getDirectConnectedPeers(callback);
     },
 
-    getState: function(threadId) {
+    getState: function(threadId, callback) {
       if (!threadId) {
-        return this._threadListNetwork.getState();
+        return this._threadListNetwork.getState(callback);
       }
       if (!_.has(this._threadNetworks, threadId)) {
         throw new Error("Unknown thread ID: " + threadId);
       }
-      return this._threadNetworks[threadId].getState();
+      return this._threadNetworks[threadId].getState(callback);
     },
 
     checkPeerSetting: function() {

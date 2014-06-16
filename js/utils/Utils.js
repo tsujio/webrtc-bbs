@@ -30,6 +30,7 @@ define(['underscore'], function(_) {
       return {
         WebRTC: !!(window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection),
         indexedDB: !!window.indexedDB,
+        WebWorker: !!window.Worker,
         history: !!window.history,
       };
     },

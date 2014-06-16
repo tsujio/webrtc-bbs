@@ -157,23 +157,24 @@
           <% _.each([
                {
                  name: 'WebRTC',
-                 supported: requiredFunctions.WebRTC,
                  site: '<a href="http://www.webrtc.org/">WebRTC</a> or <a href="http://caniuse.com/rtcpeerconnection">Can I use WebRTC Peer-to-peer connections</a>',
                },
                {
                  name: 'indexedDB',
-                 supported: requiredFunctions.indexedDB,
                  site: '<a href="http://caniuse.com/indexeddb">Can I use IndexedDB</a>',
                },
                {
+                 name: 'WebWorker',
+                 site: '<a href="http://caniuse.com/webworkers">Can I use Web Workers</a>',
+               },
+               {
                  name: 'history',
-                 supported: requiredFunctions.history,
                  site: '<a href="http://caniuse.com/history">Can I use Session history management</a>',
                }
              ], function(item) { %>
             <tr>
               <td><%- item.name %></td>
-              <td><p class=<%- item.supported ? "text-success" : "text-danger" %>><%- item.supported %></p></td>
+              <td><p class=<%- requiredFunctions[item.name] ? "text-success" : "text-danger" %>><%- requiredFunctions[item.name] %></p></td>
               <td><%= item.site %></td>
             </tr>
           <% }); %>

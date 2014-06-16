@@ -18,51 +18,55 @@ define([
   UpdateBbsContentsTask.prototype.run = function() {
     var self = this;
 
-    if (this._networkAgent.getState() === 'connected') {
-      Thread.all(function(threads, error) {
-        if (error) {
-          console.log("Failed to get threads:", error);
-          return;
-        }
-
-        self._networkAgent.fetchThreads(_.map(threads, function(thread) {
-          return thread.id;
-        }), function(threadsInfo, error) {
+    this._networkAgent.getState(null, function(state) {
+      if (state === 'connected') {
+        Thread.all(function(threads, error) {
           if (error) {
-            console.log("Failed to fetch threads:", error);
+            console.log("Failed to get threads:", error);
             return;
           }
 
-          Utils.debug("[UpdateBbsContentsTask] retrieved threads:", threadsInfo);
-
-          Thread.createAll(threadsInfo);
-        });
-      });
-    }
-
-    var threadIds = this._networkAgent.getJoiningThreadIds();
-    _.each(threadIds, function(threadId) {
-      if (self._networkAgent.getState(threadId) === 'connected') {
-        Message.find({threadId: threadId}, function(messages, error) {
-          if (error) {
-            console.log("Failed to get messages:", error);
-            return;
-          }
-
-          self._networkAgent.fetchMessages(threadId, _.map(messages, function(message) {
-            return message.id;
-          }), function(messagesInfo, error) {
+          self._networkAgent.fetchThreads(_.map(threads, function(thread) {
+            return thread.id;
+          }), function(threadsInfo, error) {
             if (error) {
-              console.log("Failed to fetch messages:", error);
+              console.log("Failed to fetch threads:", error);
               return;
             }
 
-            Utils.debug("[UpdateBbsContentsTask] retrieved messages:", messagesInfo);
+            Utils.debug("[UpdateBbsContentsTask] retrieved threads:", threadsInfo);
 
-            Message.createAll(messagesInfo);
+            Thread.createAll(threadsInfo);
           });
         });
       }
+    });
+
+    var threadIds = this._networkAgent.getJoiningThreadIds();
+    _.each(threadIds, function(threadId) {
+      self._networkAgent.getState(threadId, function(state) {
+        if (state === 'connected') {
+          Message.find({threadId: threadId}, function(messages, error) {
+            if (error) {
+              console.log("Failed to get messages:", error);
+              return;
+            }
+
+            self._networkAgent.fetchMessages(threadId, _.map(messages, function(message) {
+              return message.id;
+            }), function(messagesInfo, error) {
+              if (error) {
+                console.log("Failed to fetch messages:", error);
+                return;
+              }
+
+              Utils.debug("[UpdateBbsContentsTask] retrieved messages:", messagesInfo);
+
+              Message.createAll(messagesInfo);
+            });
+          });
+        }
+      });
     });
   };
 

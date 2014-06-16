@@ -1,10 +1,11 @@
 define([
+  'underscore',
   'controllers/ApplicationController',
   'views/ApplicationView',
   'views/settings/IndexView',
   'models/Thread',
   'utils/Utils'
-], function(ApplicationController, ApplicationView, IndexView, Thread, Utils) {
+], function(_, ApplicationController, ApplicationView, IndexView, Thread, Utils) {
   var SettingsController = Utils.inherit(ApplicationController, function(networkAgent) {
     ApplicationController.call(this, networkAgent);
   });
@@ -12,31 +13,43 @@ define([
   SettingsController.prototype.index = function(args, format) {
     var self = this;
 
-    var state = this._networkAgent.getState();
-    var peerId = this._networkAgent.getPeerId();
-    var directConnectedPeers = this._networkAgent.getDirectConnectedPeers();
-    var peers = this._networkAgent.getPeers();
-    Thread.all(function(threads) {
-      threads = _.filter(threads, function(thread) {
-        return _.contains(self._networkAgent.getJoiningThreadIds(), thread.id);
-      });
+    self._networkAgent.getState(null, function(state) {
+      self._networkAgent.getPeerId(null, function(peerId) {
+        self._networkAgent.getDirectConnectedPeers(null, function(directConnectedPeers) {
+          var peers = self._networkAgent.getPeers();
+          Thread.all(function(threads) {
+            threads = _.filter(threads, function(thread) {
+              return _.contains(self._networkAgent.getJoiningThreadIds(), thread.id);
+            });
 
-      var threadsInfo = _.map(threads, function(thread) {
-        return {
-          thread: thread,
-          directConnectedPeers: self._networkAgent.getDirectConnectedPeers(thread.id)
-        };
-      });
+            var getThreadsInfo = function(threads, callback) {
+              if (_.isEmpty(threads)) {
+                return callback([]);
+              }
 
-      self._response(format, {
-        html: function() {
-          (new ApplicationView()).render(new IndexView(),
-                                         state,
-                                         peerId,
-                                         directConnectedPeers,
-                                         peers,
-                                         threadsInfo);
-        }
+              self._networkAgent.getDirectConnectedPeers(_.first(threads).id, function(directConnectedPeers) {
+                getThreadsInfo(_.rest(threads), function(threadsInfo) {
+                  callback([{
+                    thread: _.first(threads),
+                    directConnectedPeers: directConnectedPeers
+                  }].concat(threadsInfo));
+                });
+              });
+            };
+            getThreadsInfo(threads, function(threadsInfo) {
+              self._response(format, {
+                html: function() {
+                  (new ApplicationView()).render(new IndexView(),
+                                                 state,
+                                                 peerId,
+                                                 directConnectedPeers,
+                                                 peers,
+                                                 threadsInfo);
+                }
+              });
+            });
+          });
+        });
       });
     });
   };

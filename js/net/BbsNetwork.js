@@ -1,6 +1,6 @@
 define([
-  'underscore', 'webrtcnet', 'net/Request', 'net/Response', 'utils/Utils'
-], function(_, Chord, Request, Response, Utils) {
+  'underscore', 'cryptojs', 'net/Request', 'net/Response', 'utils/Utils'
+], function(_, CryptoJS, Request, Response, Utils) {
   var BbsNetwork = function(config, onRequestReceivedCallback) {
     var self = this;
 
@@ -10,12 +10,38 @@ define([
     }
 
     this._config = config;
-    this._chord = new Chord(config, function(fromPeerId, message) {
-      self._onMessageReceived(fromPeerId, message);
-    });
+    this._worker = new Worker('./js/net/NetworkWorker.js');
     this._onRequestReceivedCallback = onRequestReceivedCallback;
+    this._requestCallbacks = {};
     this._callbacks = {};
     this._state = 'initialized';
+
+    this._worker.addEventListener('message', function(e) {
+      var data = e.data;
+      switch (data.cmd) {
+      case 'message':
+        self._onMessageReceived(data.params.fromPeerId, data.params.message);
+        break;
+
+      default:
+        if (_.has(self._callbacks, data.id)) {
+          var callback = self._callbacks[data.id];
+          delete self._callbacks[data.id];
+          callback(data.params);
+        }
+      }
+    });
+
+    var id = this._registerCallback(function(params) {
+    });
+
+    this._worker.postMessage({
+      cmd: 'initialize',
+      id: id,
+      params: {
+        config: config
+      }
+    });
   };
 
   BbsNetwork.prototype = {
@@ -24,13 +50,19 @@ define([
 
       this._state = 'connecting';
 
-      this._chord.create(function(peerId, error) {
-        if (error) {
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
           self._state = 'failed';
+          callback(null, new Error(params.error));
         } else {
           self._state = 'connected';
+          callback(params.peerId);
         }
-        callback(peerId, error);
+      });
+
+      this._worker.postMessage({
+        cmd: 'create',
+        id: id
       });
     },
 
@@ -39,18 +71,29 @@ define([
 
       this._state = 'connecting';
 
-      this._chord.join(bootstrapId, function(peerId, error) {
-        if (error) {
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
           self._state = 'failed';
+          callback(null, new Error(error));
         } else {
           self._state = 'connected';
+          callback(params.peerId);
         }
-        callback(peerId, error);
+      });
+
+      this._worker.postMessage({
+        cmd: 'join',
+        id: id,
+        params: {
+          bootstrapId: bootstrapId
+        }
       });
     },
 
     leaveNetwork: function() {
-      this._chord.leave();
+      this._worker.postMessage({
+        cmd: 'leave'
+      });
       this._state = 'initialized';
     },
 
@@ -95,57 +138,111 @@ define([
     },
 
     insertEntry: function(key, value, callback) {
-      this._chord.insert(key, value, callback);
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
+          callback(new Error(params.error));
+        } else {
+          callback();
+        }
+      });
+
+      this._worker.postMessage({
+        cmd: 'insert',
+        id: id,
+        params: {
+          key: key,
+          value: value
+        }
+      });
     },
 
     retrieveEntries: function(key, callback) {
-      this._chord.retrieve(key, callback);
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
+          callback(null, new Error(error));
+        } else {
+          callback(params.entries);
+        }
+      });
+
+      this._worker.postMessage({
+        cmd: 'retrieve',
+        id: id,
+        params: {
+          key: key
+        }
+      });
     },
 
     removeEntry: function(key, value, callback) {
-      this._chord.remove(key, value, callback);
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
+          callback(new Error(params.error));
+        } else {
+          callback();
+        }
+      });
+
+      this._worker.postMessage({
+        cmd: 'remove',
+        id: id,
+        params: {
+          key: key,
+          value: value
+        }
+      });
     },
 
     _sendRequest: function(method, params, callbacks) {
       var self = this;
 
-      if (this.getState() !== 'connected') {
-        if (callbacks) {
-          callbacks.error(new Error("Connect to network at first."));
-        }
-        return
-      }
-
-      var request = Request.create(method, params);
-
-      if (callbacks) {
-        var timer = setTimeout(function() {
-          delete self._callbacks[request.requestId];
-          callbacks.error(new Error("Request timed out."));
-        }, this._config.requestMessageTimeout);
-
-        this._callbacks[request.requestId] = _.once(function(response) {
-          clearTimeout(timer);
-
-          if (response.status !== 'SUCCESS') {
-            callbacks.error(new Error(response.message));
-            return;
+      this.getState(function(state) {
+        if (state !== 'connected') {
+          if (callbacks) {
+            callbacks.error(new Error("Connect to network at first."));
           }
-
-          callbacks.success(response.result);
-        });
-      }
-
-      Utils.debug("Sending request:", request.method);
-
-      try {
-       this._chord.sendMessage(null, request.toJson());
-      } catch (e) {
-        clearTimeout(timer);
-        if (callbacks) {
-          callbacks.error(e);
+          return;
         }
-      }
+
+        var request = Request.create(method, params);
+
+        if (callbacks) {
+          var timer = setTimeout(function() {
+            delete self._requestCallbacks[request.requestId];
+            callbacks.error(new Error("Request timed out."));
+          }, self._config.requestMessageTimeout);
+
+          self._requestCallbacks[request.requestId] = _.once(function(response) {
+            clearTimeout(timer);
+
+            if (response.status !== 'SUCCESS') {
+              callbacks.error(new Error(response.message));
+              return;
+            }
+
+            callbacks.success(response.result);
+          });
+        }
+
+        Utils.debug("Sending request:", request.method);
+
+        var id = self._registerCallback(function(params) {
+          if (params.error) {
+            clearTimeout(timer);
+            delete self._requestCallbacks[request.requestId];
+            callbacks.error(new Error(params.error));
+          }
+        });
+
+        self._worker.postMessage({
+          cmd: 'send',
+          id: id,
+          params: {
+            toPeerId: null,
+            message: request.toJson()
+          }
+        });
+      });
     },
 
     _onMessageReceived: function(fromPeerId, messageJson) {
@@ -162,9 +259,9 @@ define([
 
         Utils.debug("Received response from", fromPeerId, ":", response.method);
 
-        if (_.has(this._callbacks, response.requestId)) {
-          var callback = this._callbacks[response.requestId];
-          delete this._callbacks[response.requestId];
+        if (_.has(this._requestCallbacks, response.requestId)) {
+          var callback = this._requestCallbacks[response.requestId];
+          delete this._requestCallbacks[response.requestId];
           callback(response);
         }
       } else if (Request.isRequest(messageJson)) {
@@ -179,46 +276,87 @@ define([
         Utils.debug("Received request from", fromPeerId, ":", request.method);
 
         this._onRequestReceivedCallback(fromPeerId, request, function(response) {
-          if (self.getState() !== 'connected') {
-            return;
-          }
+          self.getState(function(state) {
+            if (state !== 'connected') {
+              return;
+            }
 
-          Utils.debug("Sending response to", fromPeerId, ":", response.method, "(", response.status, ")");
+            Utils.debug("Sending response to", fromPeerId, ":", response.method, "(", response.status, ")");
 
-          self._chord.sendMessage(fromPeerId, response.toJson());
+            var id = self._registerCallback(function(params) {
+              if (params.error) {
+                console.log("Failed to send response to ", fromPeerId, ":", params.error);
+              }
+            });
+
+            self._worker.postMessage({
+              cmd: 'send',
+              id: id,
+              params: {
+                toPeerId: fromPeerId,
+                message: response.toJson()
+              }
+            });
+          });
         });
       }
     },
 
-    getPeerId: function() {
-      try {
-        return this._chord.getPeerId();
-      } catch (e) {
-        return "";
-      }
+    _createCallbackId: function() {
+      return CryptoJS.SHA256(Math.random().toString()).toString();
     },
 
-    getDirectConnectedPeers: function() {
-      var statuses;
-      try {
-        statuses = this._chord.getStatuses();
-      } catch (e) {
-        return [];
-      }
-
-      return _.chain(statuses.successors)
-        .concat([statuses.predecessor])
-        .reject(function(peer) { return !peer; })
-        .map(function(peer) { return peer.peerId; })
-        .unique()
-        .value();
+    _registerCallback: function(callback) {
+      var id = this._createCallbackId();
+      this_callbacks[id] = callback;
+      return id;
     },
 
-    getState: function() {
-      if (this._state === 'connected' && _.isEmpty(this.getDirectConnectedPeers())) {
-        return 'listening';
-      }
-      return this._state;
+    getPeerId: function(callback) {
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
+          callback("");
+        } else {
+          callback(params.peerId);
+        }
+      });
+
+      this._worker.postMessage({
+        cmd: 'getPeerId',
+        id: id
+      });
+    },
+
+    getDirectConnectedPeers: function(callback) {
+      var id = this._registerCallback(function(params) {
+        if (params.error) {
+          return callback([]);
+        }
+
+        callback(_.chain(params.statuses.successors)
+                 .concat([statuses.predecessor])
+                 .reject(function(peer) { return !peer; })
+                 .map(function(peer) { return peer.peerId; })
+                 .unique()
+                 .value());
+      });
+
+      this._worker.postMessage({
+        cmd: 'getStatuses',
+        id: id
+      });
+    },
+
+    getState: function(callback) {
+      var self = this;
+
+      this.getDirectConnectedPeers(function(peers) {
+        if (self._state === 'connected' && _.isEmpty(peers)) {
+          callback('listening');
+        } else {
+          callback(self._state);
+        }
+      });
     }
   };
 
