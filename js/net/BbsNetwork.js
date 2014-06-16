@@ -308,7 +308,7 @@ define([
 
     _registerCallback: function(callback) {
       var id = this._createCallbackId();
-      this_callbacks[id] = callback;
+      this._callbacks[id] = callback;
       return id;
     },
 

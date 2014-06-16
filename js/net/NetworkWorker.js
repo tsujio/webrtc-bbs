@@ -18,7 +18,7 @@
       });
 
       self.postMessage({
-        cmd: 'initialized'
+        cmd: 'initialized',
         id: data.id
       });
       break;
