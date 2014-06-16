@@ -133,7 +133,7 @@ define([
 
         self._response(format, {
           html: function() {
-            (new ApplicationView()).render(new ShowView(), thread, messages, function(params) {
+            (new ApplicationView()).render(new ShowView(), thread, messages, args.fillInMessage, function(params) {
               try {
                 Message.new(params);
                 return "";

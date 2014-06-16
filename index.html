@@ -84,7 +84,7 @@
         <dl id="message-list">
           <% _.each(messages, function(message) { %>
             <dt id="<%- message.id %>">
-              <a href="#" class="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="btn-reply">[Reply]</a>
+              <a href="#" class="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" class="a-reply">[Reply]</a>
             </dt>
             <dd><%= message.body %></dd>
           <% }); %>
@@ -92,7 +92,7 @@
       </div>
 
       <hr />
-      <div class="panel panel-default">
+      <div class="panel panel-default" id="panel-post-message">
         <div class="panel-body">
           <form class="form" id="form-post-message">
             <div class="form-group">
@@ -131,7 +131,7 @@
     <script type="text/template" id="template-message-show">
       <dl>
         <dt id="<%- message.id %>">
-          <a href="#" id="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="btn-reply">[Reply]</a> <button type="button" class="btn btn-sm" id="btn-delete-message">Delete</button>
+          <a href="#" id="a-message-show"><%- message.id.substr(0, 8) %></a> <%- message.date.toLocaleString() %> <a href="#" id="a-reply">[Reply]</a> <button type="button" class="btn btn-sm" id="btn-delete-message">Delete</button>
         </dt>
         <dd><%= message.body %></dd>
       </dl>

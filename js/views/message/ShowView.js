@@ -21,6 +21,14 @@ define(['jquery', 'underscore', 'utils/Utils'], function($, _, Utils) {
         return false;
       });
 
+      this._$html.find("#a-reply").click(function() {
+        WebRtcBbs.context.routing.to('/thread/show', {
+          threadId: message.threadId,
+          fillInMessage: ">>" + message.id.substr(0, 8) + "\n"
+        });
+        return false;
+      });
+
       this._$html.find("#btn-delete-message").click(function() {
         WebRtcBbs.context.routing.to('/message/delete', {
           messageId: message.id,
