@@ -135,10 +135,6 @@ define(['underscore', 'db/DbManager'], function(_, DbManager) {
       DbManager.getInstance().delete(store, this.id, callback);
     },
 
-    exists: function(store, callback) {
-      BaseModel.exists(this.constructor, store, this.id, callback);
-    },
-
     toJson: function() {
       throw new Error("Not implemented.");
     },

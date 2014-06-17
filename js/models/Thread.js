@@ -75,6 +75,10 @@ define([
     BaseModel.deleteAll(STORE_NAME, callback);
   };
 
+  Thread.exists = function(id, callback) {
+    BaseModel.exists(MODEL_CLASS, STORE_NAME, id, callback);
+  };
+
   Thread.where = function(cond, callback) {
     BaseModel.where(MODEL_CLASS, STORE_NAME, cond, callback);
   };
@@ -96,7 +100,7 @@ define([
   };
 
   Thread.prototype.exists = function(callback) {
-    BaseModel.prototype.exists.call(this, STORE_NAME, callback);
+    Thread.exists(this.id, callback);
   };
 
   Thread.prototype.toJson = function() {

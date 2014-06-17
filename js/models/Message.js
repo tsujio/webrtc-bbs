@@ -88,6 +88,10 @@ define([
     BaseModel.deleteAll(STORE_NAME, callback);
   };
 
+  Message.exists = function(id, callback) {
+    BaseModel.exists(MODEL_CLASS, STORE_NAME, id, callback);
+  };
+
   Message.where = function(cond, callback) {
     BaseModel.where(MODEL_CLASS, STORE_NAME, cond, callback);
   };
@@ -117,7 +121,7 @@ define([
   };
 
   Message.prototype.exists = function(callback) {
-    BaseModel.prototype.exists.call(this, STORE_NAME, callback);
+    Message.exists(this.id, callback);
   };
 
   Message.prototype.destroy = function(callback) {
