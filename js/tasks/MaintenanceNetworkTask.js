@@ -18,6 +18,24 @@ define([
   MaintenanceNetworkTask.prototype.run = function() {
     var self = this;
 
+    var maintenanceThreadNetworks = function() {
+      var threadIds = self._networkAgent.getJoiningThreadIds();
+      _.each(threadIds, function(threadId) {
+        if (self._networkAgent.getState(threadId) === 'failed' ||
+            self._networkAgent.getState(threadId) === 'listening') {
+          self._networkAgent.leaveThreadNetwork(threadId);
+
+          self._networkAgent.joinThreadNetwork(threadId, function(peerId, error) {
+            if (error) {
+              console.log("Failed to join thread network (thread ID: " + threadId + "): " + error);
+              return;
+            }
+            console.log("Peer ID: " + peerId);
+          });
+        }
+      });
+    };
+
     if (this._networkAgent.getState() === 'failed' ||
         this._networkAgent.getState() === 'listening') {
       this._networkAgent.leaveNetwork();
@@ -28,24 +46,12 @@ define([
           return;
         }
         console.log("Peer ID: " + peerId);
+
+        maintenanceThreadNetworks();
       });
+    } else {
+      maintenanceThreadNetworks();
     }
-
-    var threadIds = this._networkAgent.getJoiningThreadIds();
-    _.each(threadIds, function(threadId) {
-      if (self._networkAgent.getState(threadId) === 'failed' ||
-          self._networkAgent.getState(threadId) === 'listening') {
-        self._networkAgent.leaveThreadNetwork(threadId);
-
-        self._networkAgent.joinThreadNetwork(threadId, function(peerId, error) {
-          if (error) {
-            console.log("Failed to join thread network (thread ID: " + threadId + "): " + error);
-            return;
-          }
-          console.log("Peer ID: " + peerId);
-        });
-      }
-    });
   };
 
   return MaintenanceNetworkTask;

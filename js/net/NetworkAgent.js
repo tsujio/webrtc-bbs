@@ -53,11 +53,6 @@ define([
     },
 
     leaveNetwork: function() {
-      var self = this;
-
-      _.each(_.keys(this._threadNetworks), function(threadId) {
-        self.leaveThreadNetwork(threadId);
-      });
       this._threadListNetwork.leaveNetwork();
 
       Utils.debug("Left thread list network.");
