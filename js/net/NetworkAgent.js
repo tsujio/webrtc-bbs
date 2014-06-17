@@ -33,6 +33,7 @@ define([
 
         var retryJoinNetwork = function(bootstrapIds, callback) {
           if (_.isEmpty(bootstrapIds)) {
+            self.leaveNetwork();
             return callback(null, new Error("Failed to join network."));
           }
 
@@ -82,7 +83,7 @@ define([
       var self = this;
 
       if (_.has(this._threadNetworks, threadId)) {
-        return callback();
+        return callback(this._threadNetworks[threadId].getPeerId());
       }
 
       Utils.debug("Trying to join thread network (thread ID", threadId, ")");
@@ -94,8 +95,7 @@ define([
 
       this._threadListNetwork.retrieveEntries(threadId, function(bootstrapIds, error) {
         if (error) {
-          delete self._threadNetworks[threadId];
-          return callback(new Error("Failed to retrieve bootstrap IDs:", error));
+          return callback(null, new Error("Failed to retrieve bootstrap IDs:" + error));
         }
 
         Utils.debug("[joinThreadNetwork] bootstrapIds:", bootstrapIds.toString());
@@ -107,14 +107,14 @@ define([
         if (_.isEmpty(bootstrapIds)) {
           threadNetwork.createNetwork(function(peerId, error) {
             if (error) {
-              delete self._threadNetworks[threadId];
-              return callback(error);
+              threadNetwork.leaveNetwork();
+              return callback(null, error);
             }
 
             Utils.debug("Created thread network (thread ID:", threadId, ")");
 
             self._threadListNetwork.insertEntry(threadId, peerId);
-            callback();
+            callback(peerId);
           });
           return;
         }
@@ -136,14 +136,14 @@ define([
 
         retryJoinNetwork(bootstrapIds, function(peerId, error) {
           if (error) {
-            delete self._threadNetworks[threadId];
-            return callback(error);
+            threadNetwork.leaveNetwork();
+            return callback(null, error);
           }
 
           Utils.debug("Joining thread network succeeded (thread ID:", threadId, ")");
 
           self._threadListNetwork.insertEntry(threadId, peerId);
-          callback();
+          callback(peerId);
         });
       });
     },

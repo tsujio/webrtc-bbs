@@ -22,6 +22,15 @@ define([
     createNetwork: function(callback) {
       var self = this;
 
+      if (this.getState() !== 'initialized') {
+        if (this.getState() === 'failed') {
+          callback(null, new Error("Leave network at first."));
+        } else {
+          callback(null, new Error("Invalid state."));
+        }
+        return;
+      }
+
       this._state = 'connecting';
 
       this._chord.create(function(peerId, error) {
@@ -36,6 +45,15 @@ define([
 
     joinNetwork: function(bootstrapId, callback) {
       var self = this;
+
+      if (this.getState() !== 'initialized') {
+        if (this.getState() === 'failed') {
+          callback(null, new Error("Leave network at first."));
+        } else {
+          callback(null, new Error("Invalid state."));
+        }
+        return;
+      }
 
       this._state = 'connecting';
 
@@ -95,23 +113,48 @@ define([
     },
 
     insertEntry: function(key, value, callback) {
+      if (this.getState() !== 'connected' &&
+          this.getState() !== 'listening') {
+        if (callback) {
+          callback(new Error("Invalid state."));
+        }
+        return;
+      }
+
       this._chord.insert(key, value, callback);
     },
 
     retrieveEntries: function(key, callback) {
+      if (this.getState() !== 'connected' &&
+          this.getState() !== 'listening') {
+        if (callback) {
+          callback(null, new Error("Invalid state."));
+        }
+        return;
+      }
+
       this._chord.retrieve(key, callback);
     },
 
     removeEntry: function(key, value, callback) {
+      if (this.getState() !== 'connected' &&
+          this.getState() !== 'listening') {
+        if (callback) {
+          callback(new Error("Invalid state."));
+        }
+        return;
+      }
+
       this._chord.remove(key, value, callback);
     },
 
     _sendRequest: function(method, params, callbacks) {
       var self = this;
 
-      if (this.getState() !== 'connected') {
+      if (this.getState() !== 'connected' ||
+          this.getState() !== 'listening') {
         if (callbacks) {
-          callbacks.error(new Error("Connect to network at first."));
+          callbacks.error(new Error("Invalid state."));
         }
         return
       }

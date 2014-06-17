@@ -103,11 +103,13 @@ define([
     }
 
     if (format === 'html') {
-      this._networkAgent.joinThreadNetwork(args.threadId, function(error) {
+      this._networkAgent.joinThreadNetwork(args.threadId, function(peerId, error) {
         if (error) {
           console.log("Failed to join thread network (thread ID: " + args.threadId + "): " + error);
           return;
         }
+
+        Utils.debug("Joined thread network (thread ID:", args.threadId, "):", error);
       });
     }
 

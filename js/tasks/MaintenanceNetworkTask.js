@@ -21,8 +21,7 @@ define([
     var maintenanceThreadNetworks = function() {
       var threadIds = self._networkAgent.getJoiningThreadIds();
       _.each(threadIds, function(threadId) {
-        if (self._networkAgent.getState(threadId) === 'failed' ||
-            self._networkAgent.getState(threadId) === 'listening') {
+        if (self._networkAgent.getState(threadId) !== 'connected') {
           self._networkAgent.leaveThreadNetwork(threadId);
 
           self._networkAgent.joinThreadNetwork(threadId, function(peerId, error) {
@@ -36,8 +35,7 @@ define([
       });
     };
 
-    if (this._networkAgent.getState() === 'failed' ||
-        this._networkAgent.getState() === 'listening') {
+    if (this._networkAgent.getState() !== 'connected') {
       this._networkAgent.leaveNetwork();
 
       this._networkAgent.joinNetwork(function(peerId, error) {
