@@ -21,7 +21,8 @@ define([
     var maintenanceThreadNetworks = function() {
       var threadIds = self._networkAgent.getJoiningThreadIds();
       _.each(threadIds, function(threadId) {
-        if (self._networkAgent.getState(threadId) !== 'connected') {
+        if (self._networkAgent.getState(threadId) !== 'connected' &&
+            self._networkAgent.getState(threadId) !== 'connecting') {
           self._networkAgent.leaveThreadNetwork(threadId);
 
           self._networkAgent.joinThreadNetwork(threadId, function(peerId, error) {
@@ -35,7 +36,8 @@ define([
       });
     };
 
-    if (this._networkAgent.getState() !== 'connected') {
+    if (this._networkAgent.getState() !== 'connected' &&
+        this._networkAgent.getState() !== 'connecting') {
       this._networkAgent.leaveNetwork();
 
       this._networkAgent.joinNetwork(function(peerId, error) {
