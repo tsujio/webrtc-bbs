@@ -151,8 +151,7 @@ define([
     _sendRequest: function(method, params, callbacks) {
       var self = this;
 
-      if (this.getState() !== 'connected' ||
-          this.getState() !== 'listening') {
+      if (this.getState() !== 'connected') {
         if (callbacks) {
           callbacks.error(new Error("Invalid state."));
         }
