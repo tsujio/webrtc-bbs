@@ -30,12 +30,16 @@ define([
             return;
           }
           Utils.debug("Peer ID: " + peerId);
+
+          WebRtcBbs.context.tasks.updateBbsContentsTask.run();
         });
 
         WebRtcBbs.context.routing = new Routing(networkAgent);
 
-        UpdateBbsContentsTask.create(networkAgent, config);
-        MaintenanceNetworkTask.create(networkAgent, config);
+        WebRtcBbs.context.tasks = {
+          updateBbsContentsTask: UpdateBbsContentsTask.create(networkAgent, config),
+          maintenanceNetworkTask: MaintenanceNetworkTask.create(networkAgent, config),
+        };
 
         $(window).on("popstate", function(e) {
           var state = e.originalEvent.state;

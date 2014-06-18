@@ -15,6 +15,12 @@ define([
   ThreadController.prototype.index = function(args, format, callback) {
     var self = this;
 
+    if (format === 'html') {
+      _.defer(function() {
+        WebRtcBbs.context.tasks.updateBbsContentsTask.run();
+      });
+    }
+
     var requiredFunctions = Utils.listRequiredFunctions();
     var alerts = _.chain(requiredFunctions)
       .map(function(support, funcName) {
@@ -110,6 +116,12 @@ define([
         }
 
         Utils.debug("Joined thread network (thread ID:", args.threadId, "):", error);
+
+        if (self._networkAgent.getState(args.threadId) === 'connected') {
+          _.defer(function() {
+            WebRtcBbs.context.tasks.updateBbsContentsTask.run();
+          });
+        }
       });
     }
 
