@@ -15,7 +15,14 @@ define([
 
   NetworkAgent.prototype = {
     createNetwork: function(callback) {
-      this._threadListNetwork.createNetwork(callback);
+      var self = this;
+
+      this._threadListNetwork.createNetwork(function(peerId, error) {
+        if (error) {
+          self.leaveNetwork();
+        }
+        callback(peerId, error);
+      });
     },
 
     joinNetwork: function(callback) {
@@ -55,6 +62,9 @@ define([
 
     leaveNetwork: function() {
       this._threadListNetwork.leaveNetwork();
+      this._threadListNetwork = new BbsNetwork(this._buildConfig('T'), function(fromPeerId, request, callback) {
+        self._onRequestReceived(fromPeerId, request, callback);
+      });
 
       Utils.debug("Left thread list network.");
     },
