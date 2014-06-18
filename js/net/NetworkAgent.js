@@ -61,6 +61,8 @@ define([
     },
 
     leaveNetwork: function() {
+      var self = this;
+
       this._threadListNetwork.leaveNetwork();
       this._threadListNetwork = new BbsNetwork(this._buildConfig('T'), function(fromPeerId, request, callback) {
         self._onRequestReceived(fromPeerId, request, callback);
