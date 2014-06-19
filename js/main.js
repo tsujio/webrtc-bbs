@@ -46,10 +46,12 @@ define([
           WebRtcBbs.context.routing.to(state.path, state.args, true);
         });
 
-        history.replaceState({
-          path: '/',
-          args: {}
-        }, null);
+        if (window.history) {
+          history.replaceState({
+            path: '/',
+            args: {}
+          }, null);
+        }
 
         WebRtcBbs.context.routing.to('/');
       });

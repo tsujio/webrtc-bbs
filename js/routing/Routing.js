@@ -59,10 +59,12 @@ define([
         }
 
         if (!noPushState && _.contains(['index', 'show'], elms[0]) && elms[1] === 'html') {
-          history.pushState({
-            path: path,
-            args: args
-          }, null);
+          if (window.history) {
+            history.pushState({
+              path: path,
+              args: args
+            }, null);
+          }
         }
 
         if (!callback) {
@@ -74,8 +76,10 @@ define([
     },
 
     reload: function() {
-      var state = history.state;
-      this.to(state.path, state.args);
+      if (window.history) {
+        var state = history.state;
+        this.to(state.path, state.args);
+      }
     }
   };
 
