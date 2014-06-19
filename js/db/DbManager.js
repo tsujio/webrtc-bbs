@@ -1,4 +1,4 @@
-define(['underscore', 'utils/Utils'], function(_, Utils) {
+define(['underscore', 'db/MemoryDb', 'utils/Utils'], function(_, MemoryDb, Utils) {
   var DbManager = function(db) {
     this._db = db;
   };
@@ -9,6 +9,12 @@ define(['underscore', 'utils/Utils'], function(_, Utils) {
 
     if (!callback) {
       callback = function() {};
+    }
+
+    if (!window.indexedDB) {
+      DbManager._instance = new MemoryDb();
+      callback(new Error("indexedDB is not supported."));
+      return;
     }
 
     var request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -43,25 +49,22 @@ define(['underscore', 'utils/Utils'], function(_, Utils) {
     request.onsuccess = function(e) {
       Utils.debug("Opening DB succeeded.");
 
-      DbManager._db = e.target.result;
+      DbManager._instance = new DbManager(e.target.result);
       callback();
     };
 
     request.onerror = function(e) {
       Utils.debug("Failed to open DB:", e.value);
 
+      DbManager._instance = new MemoryDb();
+
       callback(e.value);
     };
   };
 
   DbManager.getInstance = function() {
-    if (!DbManager._instance) {
-      DbManager._instance = new DbManager(DbManager._db);
-    }
     return DbManager._instance;
   };
-
-  DbManager._db = null;
 
   DbManager._instance = null;
 
