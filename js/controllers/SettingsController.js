@@ -2,9 +2,10 @@ define([
   'controllers/ApplicationController',
   'views/ApplicationView',
   'views/settings/IndexView',
+  'models/Setting',
   'models/Thread',
   'utils/Utils'
-], function(ApplicationController, ApplicationView, IndexView, Thread, Utils) {
+], function(ApplicationController, ApplicationView, IndexView, Setting, Thread, Utils) {
   var SettingsController = Utils.inherit(ApplicationController, function(networkAgent) {
     ApplicationController.call(this, networkAgent);
   });
@@ -28,29 +29,36 @@ define([
         };
       });
 
-      self._response(format, {
-        html: function() {
-          (new ApplicationView()).render(new IndexView(),
-                                         state,
-                                         peerId,
-                                         directConnectedPeers,
-                                         peers,
-                                         threadsInfo);
+      Setting.get(Setting.defaultId, function(setting, error) {
+        if (error) {
+          console.log("Failed to load settings:", error);
+          setting = Setting.getDefaults();
         }
+
+        self._response(format, {
+          html: function() {
+            (new ApplicationView()).render(new IndexView(),
+                                           state,
+                                           peerId,
+                                           directConnectedPeers,
+                                           peers,
+                                           threadsInfo,
+                                           setting);
+          }
+        });
       });
     });
   };
 
-/*    onCreateButtonClicked: function(callback) {
-      this._networkAgent.createNetwork(callback);
-    },
+  SettingsController.prototype.update = function(args, format) {
+    Setting.create(args.setting, function(setting, error) {
+      if (error) {
+        console.log("Failed to save settings:", error);
+      }
 
-    onJoinButtonClicked: function(bootstrapId, callback) {
-      this._networkAgent.joinNetwork(bootstrapId, function(peerId) {
-        callback(peerId);
-      });
-    }
-  };*/
+      WebRtcBbs.context.routing.to('/settings');
+    });
+  };
 
   return SettingsController;
 });

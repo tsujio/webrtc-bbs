@@ -252,6 +252,17 @@
             </tbody>
           </table>
         </div>
+
+        <div>
+          <h3>Personal settings</h3>
+          <table class="table" id="table-personal-settings">
+            <thead><tr><th>Name</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Maximum # of messages to retain per thread</td><td><input type="number" id="number-max-messages-per-thread" value="<%- setting.maxNumberOfMessagesPerThread %>" /></td></tr>
+              <tr><td></td><td><button type="button" class="btn btn-primary" id="btn-apply-settings">Apply</button></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </script>
   </body>

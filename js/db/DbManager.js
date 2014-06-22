@@ -5,7 +5,7 @@ define(['underscore', 'db/MemoryDb', 'utils/Utils'], function(_, MemoryDb, Utils
 
   DbManager.initialize = function(callback) {
     var DB_NAME = 'WebRtcBbs';
-    var DB_VERSION = 2;
+    var DB_VERSION = 3;
 
     if (!callback) {
       callback = function() {};
@@ -44,6 +44,13 @@ define(['underscore', 'db/MemoryDb', 'utils/Utils'], function(_, MemoryDb, Utils
       });
       messageStore.createIndex('threadIdIndex', 'threadId', {unique: false});
       messageStore.createIndex('dateIndex', 'date', {unique: false});
+
+      if (db.objectStoreNames.contains('setting')) {
+        db.deleteObjectStore('setting');
+      }
+      var settingStore = db.createObjectStore('setting', {
+        keyPath: 'id'
+      });
     };
 
     request.onsuccess = function(e) {
