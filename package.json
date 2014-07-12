@@ -1,0 +1,46 @@
+{
+  "name": "webrtc-bbs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "browserify --standalone WebRtcBbs . | uglifyjs > js/webrtc-bbs.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tsujio/webrtc-bbs.git"
+  },
+  "keywords": [
+    "webrtc",
+    "bbs"
+  ],
+  "author": "tsujio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsujio/webrtc-bbs/issues"
+  },
+  "homepage": "https://github.com/tsujio/webrtc-bbs",
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:$",
+    "underscore": "global:_",
+    "cryptojs": "global:CryptoJS",
+    "peerjs": "global:Peer",
+    "webrtcnet": { "exports": "Chord" }
+  },
+  "browser": {
+    "webrtcnet": "./lib/webrtc-chord/dist/webrtc-net.js"
+  },
+  "devDependencies": {
+    "browserify": "^4.2.0",
+    "browserify-shim": "^3.6.0",
+    "uglify-js": "^2.4.15"
+  }
+}
