@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "browserify --standalone WebRtcBbs . | uglifyjs > js/webrtc-bbs.js"
+    "build": "browserify --standalone WebRtcBbs . | uglifyjs > public/js/webrtc-bbs.js",
+    "build-no-minify": "browserify --standalone WebRtcBbs . > public/js/webrtc-bbs.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,9 @@
     "underscore": "global:_",
     "cryptojs": "global:CryptoJS",
     "peerjs": "global:Peer",
-    "webrtcnet": { "exports": "Chord" }
+    "webrtcnet": {
+      "exports": "Chord"
+    }
   },
   "browser": {
     "webrtcnet": "./lib/webrtc-chord/dist/webrtc-net.js"
@@ -42,5 +45,8 @@
     "browserify": "^4.2.0",
     "browserify-shim": "^3.6.0",
     "uglify-js": "^2.4.15"
+  },
+  "dependencies": {
+    "peer": "^0.2.6"
   }
 }

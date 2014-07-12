@@ -8,7 +8,7 @@ var server = new PeerServer({
 });
 
 function sendResponse(path, type, res, next) {
-  fs.readFile(path, function (err, data) {
+  fs.readFile("./public/" + path, function (err, data) {
     if (err) {
       next(err);
       return;
