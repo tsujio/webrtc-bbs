@@ -3,6 +3,15 @@ webrtc-bbs
 
 A distributed anonymous BBS over P2P overlay using WebRTC
 
+## Releases
+Date       | Version | Important changes |
+---------- | ------- | ----------------- |
+2014/07/17 | v0.1.0  |                   |
+
+Note that releases of different major versions are not compatible.
+
+The next release v1.0.0 is being developed on master.
+
 ## Easy Try
 ### with Node.js
 ```sh
