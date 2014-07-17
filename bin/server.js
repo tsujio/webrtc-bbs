@@ -2,7 +2,7 @@ var PeerServer = require('peer').PeerServer;
 var fs = require('fs');
 
 var server = new PeerServer({
-  port: process.env.PORT || 9000,
+  port: process.env.PORT || 80,
   key: 'webrtc-bbs',
   allow_discovery: true,
 });
