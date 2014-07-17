@@ -2,7 +2,10 @@
   var _ = require('underscore');
   var Utils = require('../utils/Utils');
 
-  var Response = function(status, method, result, requestId, timestamp) {
+  var Response = function(version, status, method, result, requestId, timestamp) {
+    if (!_.isArray(version) || version[0] !== Utils.version[0]) {
+      throw new Error("Incompatible version: " + version);
+    }
     if (!Utils.isNonemptyString(status) ||
         !Utils.isNonemptyString(method) ||
         !_.isObject(result) || !Utils.isNonemptyString(requestId) ||
@@ -10,6 +13,7 @@
       throw new Error("Invalid argument.");
     }
 
+    this.version = version;
     this.status = status;
     this.method = method;
     this.result = result;
@@ -18,7 +22,7 @@
   };
 
   Response.create = function(status, result, request) {
-    return new Response(status, request.method, result, request.requestId, _.now());
+    return new Response(Utils.version, status, request.method, result, request.requestId, _.now());
   };
 
   Response.isResponse = function(data) {
@@ -35,12 +39,13 @@
     if (!_.isObject(json)) {
       throw new Error("Invalid argument.");
     }
-    return new Response(json.status, json.method, json.result, json.requestId, json.timestamp);
+    return new Response(json.version, json.status, json.method, json.result, json.requestId, json.timestamp);
   };
 
   Response.prototype = {
     toJson: function() {
       return {
+        version: this.version,
         status: this.status,
         method: this.method,
         result: this.result,

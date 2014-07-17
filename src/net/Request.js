@@ -4,12 +4,16 @@
   var Response = require('./Response');
   var Utils = require('../utils/Utils');
 
-  var Request = function(method, params, requestId, timestamp) {
+  var Request = function(version, method, params, requestId, timestamp) {
+    if (!_.isArray(version) || version[0] !== Utils.version[0]) {
+      throw new Error("Incompatible version: " + version);
+    }
     if (!Utils.isNonemptyString(method) || !_.isObject(params) ||
         !Utils.isNonemptyString(requestId) || !_.isNumber(timestamp)) {
       throw new Error("Invalid argument.");
     }
 
+    this.version = version;
     this.method = method;
     this.params = params;
     this.requestId = requestId;
@@ -17,7 +21,7 @@
   };
 
   Request.create = function(method, params) {
-    return new Request(method, params, Request._createId(), _.now());
+    return new Request(Utils.version, method, params, Request._createId(), _.now());
   };
 
   Request._createId = function() {
@@ -32,12 +36,13 @@
     if (!_.isObject(json)) {
       throw new Error("Invalid argument.");
     }
-    return new Request(json.method, json.params, json.requestId, json.timestamp);
+    return new Request(json.version, json.method, json.params, json.requestId, json.timestamp);
   };
 
   Request.prototype = {
     toJson: function() {
       return {
+        version: this.version,
         method: this.method,
         params: this.params,
         requestId: this.requestId,

@@ -7,8 +7,11 @@
   };
 
   IndexView.prototype = {
-    html: function(requiredFunctions) {
-      return this._template({requiredFunctions: requiredFunctions});
+    html: function(requiredFunctions, version) {
+      return this._template({
+        requiredFunctions: requiredFunctions,
+        version: version,
+      });
     },
 
     onrendered: function() {

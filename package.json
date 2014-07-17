@@ -1,7 +1,7 @@
 {
   "name": "webrtc-bbs",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A distributed anonymous BBS over P2P overlay using WebRTC",
   "main": "src/main.js",
   "directories": {
     "test": "test"

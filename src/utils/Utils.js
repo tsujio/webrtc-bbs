@@ -2,6 +2,8 @@
   var _ = require('underscore');
 
   var Utils = {
+    version: [0, 1, 0],
+
     normalizeLineFeedCode: function(str) {
       return str.replace(/\r\n/, "\n").replace(/\r/, "\n");
     },

@@ -1,7 +1,7 @@
 (function() {
   var _ = require('underscore');
   var ApplicationController = require('./ApplicationController');
-  var ApplicationViwe = require('../views/ApplicationView');
+  var ApplicationView = require('../views/ApplicationView');
   var IndexView = require('../views/about/IndexView');
   var Utils = require('../utils/Utils');
 
@@ -14,7 +14,7 @@
 
     this._response(format, {
       html: function() {
-        (new ApplicationView()).render(new IndexView(), requiredFunctions);
+        (new ApplicationView()).render(new IndexView(), requiredFunctions, Utils.version);
       }
     });
   };
