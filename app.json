@@ -1,0 +1,6 @@
+{
+  "name": "webrtc-bbs",
+  "description": "A distributed anonymous BBS over P2P overlay using WebRTC",
+  "repository": "https://github.com/tsujio/webrtc-bbs",
+  "keywords": ["P2P", "BBS", "WebRTC"]
+}

@@ -35,6 +35,10 @@ heroku create
 git push heroku master
 ```
 
+Alternatively, you can deploy by the [Heroku Button][heroku-button] below.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/tsujio/webrtc-bbs)
+
 ## Requirements for Users
 webrtc-bbs requires WebRTC in order to publish/subscribe BBS contents, 
 so users must use a WebRTC-supporting browser.
@@ -46,3 +50,4 @@ to adjust some proxy settings to access to them.
 * [shinGETsu - P2P anonymous BBS](http://shingetsu.info/index.en)
 
 [toolbelt]:https://toolbelt.heroku.com
+[heroku-button]:https://blog.heroku.com/archives/2014/8/7/heroku-button
